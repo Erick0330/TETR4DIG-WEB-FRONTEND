@@ -6,7 +6,6 @@
 
 <script setup lang="ts">
 import PagesContainer from "./components/PagesContainer.vue";
-
 </script>
 
 <style scoped>

@@ -2,6 +2,7 @@
 </script>
 
 <template>
+
   <!--Tabla de Consultoria-->
 
   <div class="container mt-5">
@@ -173,9 +174,9 @@
 
 th,
 td {
-  max-width: 400px; /* Máximo ancho de la celda */
-    word-wrap: break-word; /* Permite que las palabras se dividan */
-    overflow-wrap: break-word; /* Para compatibilidad */
+  max-width: 400px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 form-select {
@@ -183,12 +184,12 @@ form-select {
 }
 
 .lista_ {
-  margin: 70px;
-  padding-left: 130px;
-  margin-top: 100px;
+  margin-top: 60px;
+  text-align: center;
   font-weight: 700;
   color: rgb(0, 0, 102);
   list-style-type: none;
+  font-size: 17px;
 }
 
 .row {
@@ -208,7 +209,13 @@ form-select {
     margin-top: 60px;
   }
 
-  @media screen and (max-width: 650px) {}
 
+}
+
+@media screen and (max-width: 1300px) {
+  .table{
+    margin: 60px auto;
+    width: 50%;
+  }
 }
 </style>

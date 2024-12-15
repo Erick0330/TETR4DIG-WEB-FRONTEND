@@ -11,7 +11,7 @@ const toggleSidebar = () => {
 </script>
 
 <template>
-   <div class="page-container">
+  <div class="page-container">
     <header class="navbar navbar-expand-lg bd-navbar sticky-top">
       <nav class="navbar bg fixed-top">
         <div class="container-fluid">
@@ -21,35 +21,19 @@ const toggleSidebar = () => {
 
           <h1>TETR4DIG</h1>
 
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNavbar"
-            aria-controls="offcanvasNavbar"
-            aria-label="Toggle navigation"
-          >
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
             <i class="bi bi-three-dots"></i>
           </button>
-          <div
-            class="offcanvas offcanvas-end"
-            tabindex="-1"
-            id="offcanvasNavbar"
-            aria-labelledby="offcanvasNavbarLabel"
-          >
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header px-4 pb-0">
-              <button
-                type="button"
-                class="btn-close btn-close-black"
-                data-bs-dismiss="offcanvas"
-                aria-label="Close"
-              ></button>
+              <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
             </div>
 
             <div class="offcanvas-body">
-              <ul
-                class="navbar-nav justify-content-end flex-grow-1 pe-3 list-group"
-              >
+              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 list-group">
                 <li class="nav-item">
                   <a class="nav-link active margin" aria-current="page" href="#about">Acerca de la app</a>
                 </li>
@@ -66,7 +50,7 @@ const toggleSidebar = () => {
 
                 <div class="border"></div>
                 <li class="nav-item">
-                  <a class="nav-link" href="/assets/login/login.html">Mi perfil</a>
+                  <a class="nav-link" href="#mi perfil">Mi perfil</a>
                 </li>
               </ul>
             </div>
@@ -100,32 +84,29 @@ const toggleSidebar = () => {
       <router-view></router-view>
     </div>
 
-
-    <footer>
-      <div class="button">
-        <a href="#"><i class="bi bi-chevron-double-up"></i></a>
-      </div>
-      <div class="contenedor">
-        <div class="redes">
-          <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
-            <i class="bi bi-envelope"></i>
-          </a>
-
-          <a href="https://www.etecsa.cu/" target="_blank">
-            <!-- <img src="assets/img/logoheader.png" alt="página oficial de ETECSA" /> -->
-          </a>
-        </div>
-      </div>
-
-      <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
-    </footer>
   </div>
+  <footer>
+    <div class="button">
+      <a href="#"><i class="bi bi-chevron-double-up"></i></a>
+    </div>
+    <div class="contenedor">
+      <div class="redes">
+        <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
+          <i class="bi bi-envelope"></i>
+        </a>
 
+        <a href="https://www.etecsa.cu/" target="_blank">
+          <img src="/public/img/logoheader.png" alt="página oficial de ETECSA" />
+        </a>
+      </div>
+    </div>
+
+    <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+  </footer>
 </template>
 
 
 <style scoped>
-
 .page-container {
   display: flex;
   flex-direction: column;
@@ -133,15 +114,13 @@ const toggleSidebar = () => {
   width: 100%;
 }
 
-.main-content{
+.main-content {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   position: absolute;
 }
-
-
 
 
 /* Header  */
@@ -193,7 +172,8 @@ header .navbar .container-fluid #toggle-button {
   width: 250px;
   transition: transform 0.3s ease;
   position: fixed;
-  top: 70px; /* Para que esté debajo del header */
+  top: 70px;
+  /* Para que esté debajo del header */
   left: 0;
   height: 100%;
   border-right: 2px solid #020e4a;
@@ -223,60 +203,63 @@ header .navbar .container-fluid #toggle-button {
 }
 
 .sidebar.active {
-  transform: translateX(0); /* Mostrar el sidebar */
+  transform: translateX(0);
+  /* Mostrar el sidebar */
 }
 
 /* Sidebar for smaller screens */
 @media (max-width: 990px) {
   .sidebar {
-    transform: translateX(-100%); /* Ocultar en pantallas pequeñas */
+    transform: translateX(-100%);
+    /* Ocultar en pantallas pequeñas */
     margin-top: 2%;
   }
 
   .sidebar.active {
-    transform: translateX(0); /* Mostrar cuando esté activo */
+    transform: translateX(0);
+    /* Mostrar cuando esté activo */
     margin-top: 2%;
   }
 }
 
 /* Estilos para pantallas pequeñas del Header*/
 @media (max-width: 990px) {
-    header .navbar .container-fluid #toggle-button {
-        display: block;
-    }
+  header .navbar .container-fluid #toggle-button {
+    display: block;
+  }
 
-    header .navbar .container-fluid #toggle-button i {
-        color: antiquewhite;
-        background-color: rgb(0, 0, 102);
-        font-size: 20px;
-    }
+  header .navbar .container-fluid #toggle-button i {
+    color: antiquewhite;
+    background-color: rgb(0, 0, 102);
+    font-size: 20px;
+  }
 
-    header .navbar .container-fluid button i {
-        color: antiquewhite;
-    }
+  header .navbar .container-fluid button i {
+    color: antiquewhite;
+  }
 
-    header .navbar {
-        height: 90px;
-    }
+  header .navbar {
+    height: 90px;
+  }
 
 }
 
 @media (min-width: 990px) {
-    header .navbar .container-fluid .offcanvas-body li a {
-        color: antiquewhite;
-        font-size: 150%;
-    }
+  header .navbar .container-fluid .offcanvas-body li a {
+    color: antiquewhite;
+    font-size: 150%;
+  }
 
-    header .navbar .container-fluid .offcanvas-body .border {
-        display: none;
-    }
+  header .navbar .container-fluid .offcanvas-body .border {
+    display: none;
+  }
 }
 
 
 @media (max-width:430px) {
   header .navbar {
-      height: 80px;
-    }
+    height: 80px;
+  }
 
   .sidebar {
     margin-top: 2.5%;
@@ -289,77 +272,81 @@ header .navbar .container-fluid #toggle-button {
 
 /* Footer  */
 footer {
-    padding: 40px 0 20px 0;
-    width: 100%;
-    background-color: rgb(0, 0, 102);
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    margin-bottom: 0;
-    margin-top: 70%;
-    z-index: 110;
+  padding: 40px 0 20px 0;
+  width: 100%;
+  background-color: rgb(0, 0, 102);
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  margin-bottom: 0;
+  margin-top: 100%;
+  z-index: 110;
 }
 
 footer .contenedor {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-self: center;
-    margin-bottom: 30px;
-    margin-left: 30px;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-self: center;
+  margin-bottom: 30px;
+  margin-left: 30px;
+  justify-content: center;
+  align-items: center;
 }
 
 footer .button {
-    font-size: 30px;
-    justify-self: center;
-    margin-top: -85px;
-    width: 13%;
-    background-color: #39c;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
+  font-size: 30px;
+  justify-self: center;
+  margin-top: -85px;
+  width: 13%;
+  background-color: #39c;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
 }
 
 footer .button i {
-    color: antiquewhite;
-    ;
+  color: antiquewhite;
+  ;
 }
 
 footer .contenedor .redes {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 footer .contenedor .redes img {
-    width: 100%;
+  width: 100%;
 }
 
 footer .contenedor .redes i {
-    color: antiquewhite;
-    font-size: 30px;
+  color: antiquewhite;
+  font-size: 30px;
 
 }
 
 footer .contenedor .redes {
-    a {
-        margin-left: 7%;
-    }
+  a {
+    margin-left: 7%;
+  }
 
-    .mail {
-        margin-left: 20%;
-    }
+  .mail {
+    margin-left: 20%;
+  }
 
 }
 
 footer p {
 
-    color: antiquewhite;
+  color: antiquewhite;
 }
 
-
+@media (max-width: 1300px) {
+  footer {
+    margin-top: 185rlh;
+  }
+}
 </style>
