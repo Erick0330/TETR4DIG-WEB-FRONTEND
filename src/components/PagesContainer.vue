@@ -297,7 +297,7 @@ footer {
     align-items: center;
     position: absolute;
     margin-bottom: 0;
-    margin-top: 100vh;
+    margin-top: 70%;
     z-index: 110;
 }
 

@@ -152,6 +152,7 @@
 .consultoria {
   text-align: center;
   font-size: 40px;
+  margin-top: 70px;
 }
 
 .table {
@@ -163,6 +164,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid rgb(237, 237, 248);
   background-color: rgb(0, 0, 102);
+  border-collapse: collapse;
 }
 
 .encab {
@@ -171,11 +173,9 @@
 
 th,
 td {
-  max-width: 200px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  position: relative;
+  max-width: 400px; /* Máximo ancho de la celda */
+    word-wrap: break-word; /* Permite que las palabras se dividan */
+    overflow-wrap: break-word; /* Para compatibilidad */
 }
 
 form-select {
