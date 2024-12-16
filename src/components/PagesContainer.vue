@@ -101,24 +101,7 @@ const toggleSidebar = () => {
     </div>
 
 
-    <footer>
-      <div class="button">
-        <a href="#"><i class="bi bi-chevron-double-up"></i></a>
-      </div>
-      <div class="contenedor">
-        <div class="redes">
-          <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
-            <i class="bi bi-envelope"></i>
-          </a>
 
-          <a href="https://www.etecsa.cu/" target="_blank">
-            <!-- <img src="assets/img/logoheader.png" alt="página oficial de ETECSA" /> -->
-          </a>
-        </div>
-      </div>
-
-      <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
-    </footer>
   </div>
 
 </template>
@@ -295,7 +278,7 @@ footer {
     display: grid;
     justify-content: center;
     align-items: center;
-    position: absolute;
+    /* position: absolute; */
     margin-bottom: 0;
     margin-top: 70%;
     z-index: 110;

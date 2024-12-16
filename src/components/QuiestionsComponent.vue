@@ -175,7 +175,7 @@ th,
 td {
   max-width: 400px; /* Máximo ancho de la celda */
     word-wrap: break-word; /* Permite que las palabras se dividan */
-    overflow-wrap: break-word; /* Para compatibilidad */
+    overflow-wrap: break-word;
 }
 
 form-select {
@@ -208,7 +208,7 @@ form-select {
     margin-top: 60px;
   }
 
-  @media screen and (max-width: 650px) {}
+
 
 }
 </style>
