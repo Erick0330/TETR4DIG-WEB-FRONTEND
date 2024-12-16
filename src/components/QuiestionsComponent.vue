@@ -2,6 +2,7 @@
 </script>
 
 <template>
+
   <!--Tabla de Consultoria-->
 
   <div class="container mt-5">
@@ -144,10 +145,33 @@
       </table>
     </div>
   </div>
+
+  <footer>
+      <div class="button">
+        <a href="#"><i class="bi bi-chevron-double-up"></i></a>
+      </div>
+      <div class="contenedor">
+        <div class="redes">
+          <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
+            <i class="bi bi-envelope"></i>
+          </a>
+
+          <a href="https://www.etecsa.cu/" target="_blank">
+            <img src="/logoheader.png" alt="página oficial de ETECSA" />
+          </a>
+        </div>
+      </div>
+
+      <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+    </footer>
 </template>
 
 <style scoped>
 /*Tabla de consultoria*/
+
+.container{
+  margin-bottom: 100px;
+}
 
 .consultoria {
   text-align: center;
@@ -173,9 +197,9 @@
 
 th,
 td {
-  max-width: 400px; /* Máximo ancho de la celda */
-    word-wrap: break-word; /* Permite que las palabras se dividan */
-    overflow-wrap: break-word;
+  max-width: 400px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 form-select {
@@ -183,12 +207,12 @@ form-select {
 }
 
 .lista_ {
-  margin: 70px;
-  padding-left: 130px;
-  margin-top: 100px;
+  margin-top: 60px;
+  text-align: center;
   font-weight: 700;
   color: rgb(0, 0, 102);
   list-style-type: none;
+  font-size: 17px;
 }
 
 .row {
@@ -197,6 +221,9 @@ form-select {
 
 /* Estilos para pantallas pequeñas de la Tabla de Consultoria*/
 @media screen and (max-width: 650px) {
+  .container{
+    margin-bottom: 190px;
+  }
   .table {
     margin: 60px auto;
     width: 10%;
@@ -208,7 +235,81 @@ form-select {
     margin-top: 60px;
   }
 
+  @media screen and (max-width: 650px) {}
 
+}
 
+/* Footer  */
+footer {
+
+padding: 40px 0 20px 0;
+width: 100%;
+background-color: rgb(0, 0, 102);
+display: grid;
+justify-content: center;
+align-items: center;
+position: absolute;
+bottom: 0;
+z-index: 110;
+}
+
+footer .contenedor {
+display: flex;
+flex-wrap: wrap;
+width: 100%;
+justify-self: center;
+margin-bottom: 30px;
+margin-left: 30px;
+justify-content: center;
+align-items: center;
+}
+
+footer .button {
+font-size: 30px;
+justify-self: center;
+margin-top: -85px;
+width: 13%;
+background-color: #39c;
+border-radius: 50%;
+display: flex;
+justify-content: center;
+}
+
+footer .button i {
+color: antiquewhite;
+;
+}
+
+footer .contenedor .redes {
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+footer .contenedor .redes img {
+width: 100%;
+}
+
+footer .contenedor .redes i {
+color: antiquewhite;
+font-size: 30px;
+
+}
+
+footer .contenedor .redes {
+a {
+    margin-left: 7%;
+}
+
+.mail {
+    margin-left: 20%;
+}
+
+}
+
+footer p {
+
+color: antiquewhite;
 }
 </style>
