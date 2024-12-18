@@ -483,7 +483,6 @@ h2 {
   padding: 90px 0 20px 0;
   width: 100%;
   left: 0;
-
 }
 
 .texto {
