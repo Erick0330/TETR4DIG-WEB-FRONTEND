@@ -19,7 +19,7 @@ const toggleSidebar = () => {
             <i class="bi bi-list"></i>
           </div>
 
-          <h1>TETR4DIG</h1>
+          <h1><router-link to="/">TETRADIG</router-link></h1>
 
           <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@ const toggleSidebar = () => {
 
                 <div class="border"></div>
                 <li class="nav-item">
-                  <a class="nav-link" href="#mi perfil">Mi perfil</a>
+                  <router-link to="/login">Mi Perfil</router-link>
                 </li>
               </ul>
             </div>
@@ -63,11 +63,11 @@ const toggleSidebar = () => {
     <div class="sidebar" :class="{ active: isSidebarActive }" id="sidebar">
       <ul class="list-group list-group-flush">
         <li class="list-group-item">
-          <a href="/assets/question/question.html">Cuestionario</a>
+          <router-link to="/questions">Cuestionario</router-link>
         </li>
 
         <li class="list-group-item">
-          <a href="/assets/report/report.html">Reportes</a>
+          <router-link to="/reports">Reportes</router-link>
         </li>
 
         <li class="list-group-item">
