@@ -1,7 +1,10 @@
 <script setup lang="ts">
+
 </script>
 
 <template>
+
+
 
   <!--Tabla de Consultoria-->
 

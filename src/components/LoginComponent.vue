@@ -1,4 +1,14 @@
 <script setup lang="ts">
+  import { useRouter } from "vue-router";
+  import {useCurrentTetraStore} from '../stores/StoreT'
+const router = useRouter();
+
+const state = useCurrentTetraStore();
+const goToQuestions = () => {
+  state.changeToQuestions();
+  router.push("/questions");
+}
+
 </script>
 
 <template>
@@ -13,14 +23,14 @@
                     </div>
                     <div id="input-area">
                         <div class="form-inp">
-                            <input placeholder="Account" type="text" />
+                            <input placeholder="Account" required type="text" />
                         </div>
                         <div class="form-inp">
-                            <input placeholder="Password" type="password" />
+                            <input placeholder="Password" required type="password" />
                         </div>
                     </div>
                     <div id="submit-button-cvr">
-                        <button id="submit-button" type="submit">Login</button>
+                        <button @click="goToQuestions" id="submit-button" type="submit">Login</button>
                     </div>
                     <div id="forgot-pass">
                         <a href="#">Forgot password?</a>
