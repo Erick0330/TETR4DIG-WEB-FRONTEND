@@ -50,11 +50,7 @@ const toggleSidebar = () => {
             <i class="bi bi-list"></i>
           </div>
 
-<<<<<<< HEAD
-          <h1><router-link to="/">TETRADIG</router-link></h1>
-=======
           <h1 @click="goToLP" style="cursor: pointer;">TETR4DIG</h1>
->>>>>>> ae6f246f0509a49763ca334f86065f3e06989012
 
           <button
             class="navbar-toggler"
@@ -104,13 +100,6 @@ const toggleSidebar = () => {
                   <a class="nav-link margin" style="cursor: pointer;" @click="gotoLogin">Editar usuario</a>
                 </li>
 
-<<<<<<< HEAD
-                <div class="border"></div>
-                <li class="nav-item">
-                  <router-link to="/login">Mi Perfil</router-link>
-                </li>
-=======
->>>>>>> ae6f246f0509a49763ca334f86065f3e06989012
               </ul>
             </div>
           </div>
@@ -126,21 +115,12 @@ const toggleSidebar = () => {
       id="sidebar"
     >
       <ul class="list-group list-group-flush">
-<<<<<<< HEAD
-        <li class="list-group-item">
-          <router-link to="/questions">Cuestionario</router-link>
-        </li>
-
-        <li class="list-group-item">
-          <router-link to="/reports">Reportes</router-link>
-=======
         <li class="list-group-item" :class="{'questions': currentView === 'Questions'}">
           <a @click="goToQuestions">Cuestionario</a>
         </li>
 
         <li class="list-group-item" :class="{'reports': currentView === 'Reports'}">
           <a @click="goToReports">Reportes</a>
->>>>>>> ae6f246f0509a49763ca334f86065f3e06989012
         </li>
 
         <li class="list-group-item" :class="{'settings': currentView === 'Settings'}">
