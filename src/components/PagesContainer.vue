@@ -1,8 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from "vue";
+import { useCurrentTetraStore } from "../stores/StoreT";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 // Controla el estado del sidebar (abierto/cerrado)
 const isSidebarActive = ref(false);
+const state = useCurrentTetraStore();
+const currentView = computed(() => state.currentView);
+const goToReports = () => {
+  state.changeToReports();
+  router.push("/reports");
+};
+const goToQuestions = () =>{
+  state.changeToQuestions();
+  router.push("/questions");
+}
+const goToSettings = () => {
+  state.changeToSettings();
+  router.push("/settings")
+}
+
+const gotoLogin = () =>{
+  state.changeToLogin();
+  router.push("/login");
+}
+
+const goToLP = () =>{
+  state.changeToLP();
+  router.push("/");
+}
 
 // Función para alternar la clase "active" en el sidebar
 const toggleSidebar = () => {
@@ -12,46 +40,66 @@ const toggleSidebar = () => {
 
 <template>
   <div class="page-container">
-    <header class="navbar navbar-expand-lg bd-navbar sticky-top">
+    <header
+      v-if="currentView !== 'LandingPage'"
+      class="navbar navbar-expand-lg bd-navbar sticky-top"
+    >
       <nav class="navbar bg fixed-top">
         <div class="container-fluid">
           <div id="toggle-button" @click="toggleSidebar">
             <i class="bi bi-list"></i>
           </div>
 
-          <h1>TETR4DIG</h1>
+          <h1 @click="goToLP" style="cursor: pointer;">TETR4DIG</h1>
 
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-            aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-            <i class="bi bi-three-dots"></i>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
+            aria-label="Toggle navigation"
+          >
+            <img src="/img/SolarUserCircleOutline.svg" width="50px">
           </button>
-          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
-            aria-labelledby="offcanvasNavbarLabel">
+          <div
+            class="offcanvas offcanvas-end"
+            tabindex="-1"
+            id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel"
+          >
             <div class="offcanvas-header px-4 pb-0">
-              <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas"
-                aria-label="Close"></button>
+              <button
+                type="button"
+                class="btn-close btn-close-black"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              ></button>
             </div>
 
             <div class="offcanvas-body">
-              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 list-group">
+              <ul
+                class="navbar-nav justify-content-end flex-grow-1 pe-3 list-group"
+              >
                 <li class="nav-item">
-                  <a class="nav-link active margin" aria-current="page" href="#about">Acerca de la app</a>
+                  <a
+                    class="nav-link active margin"
+                    aria-current="page"
+
+                    >Admin</a
+                  >
                 </li>
 
                 <div class="border"></div>
                 <li class="nav-item">
-                  <a class="nav-link margin" href="#como-usar">¿Cómo usar?</a>
+                  <a class="nav-link margin" >luis@gmail.com</a>
                 </li>
 
                 <div class="border"></div>
                 <li class="nav-item">
-                  <a class="nav-link margin" href="#resultados">Resultados</a>
+                  <a class="nav-link margin" style="cursor: pointer;" @click="gotoLogin">Editar usuario</a>
                 </li>
 
-                <div class="border"></div>
-                <li class="nav-item">
-                  <a class="nav-link" href="#mi perfil">Mi perfil</a>
-                </li>
               </ul>
             </div>
           </div>
@@ -60,52 +108,53 @@ const toggleSidebar = () => {
     </header>
 
     <!-- SideBar -->
-    <div class="sidebar" :class="{ active: isSidebarActive }" id="sidebar">
+    <div
+      class="sidebar"
+      v-if="currentView !== 'LandingPage'"
+      :class="{ active: isSidebarActive }"
+      id="sidebar"
+    >
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-          <a href="/assets/question/question.html">Cuestionario</a>
+        <li class="list-group-item" :class="{'questions': currentView === 'Questions'}">
+          <a @click="goToQuestions">Cuestionario</a>
         </li>
 
-        <li class="list-group-item">
-          <a href="/assets/report/report.html">Reportes</a>
+        <li class="list-group-item" :class="{'reports': currentView === 'Reports'}">
+          <a @click="goToReports">Reportes</a>
         </li>
 
-        <li class="list-group-item">
-          <a href="/assets/setting/settings.html">Configuración</a>
+        <li class="list-group-item" :class="{'settings': currentView === 'Settings'}">
+          <a @click="goToSettings">Configuración</a>
         </li>
-
-        <li class="list-group-item">A fourth item</li>
-
-        <li class="list-group-item">And a fifth one</li>
       </ul>
     </div>
 
-    <div class="main-content">
+    <div
+      class="main-content"
+      :class="{ 'not-lp': currentView !== 'LandingPage' }"
+    >
       <router-view></router-view>
     </div>
-
-
   </div>
-
 </template>
-
 
 <style scoped>
 .page-container {
   display: flex;
   flex-direction: column;
-
+  align-items: center;
   width: 100%;
 }
 
 .main-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
-  position: absolute;
 }
 
+.main-content.not-lp {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+}
 
 /* Header  */
 
@@ -174,7 +223,32 @@ header .navbar .container-fluid #toggle-button {
   margin: 10px 0;
   background-color: rgb(237, 237, 248);
   border-color: rgb(0, 0, 102);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif,
+    "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva,
+    Verdana, sans-serif;
+}
+.sidebar .list-group-item {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+
+.sidebar .list-group-item.reports{
+  font-size: 30px;
+  text-shadow: 0 0 10px #afb7e0;
+  font-weight: bolder;
+}
+
+.sidebar .list-group-item.questions{
+  font-size: 30px;
+  text-shadow: 0 0 10px #afb7e0;
+  font-weight: bolder;
+}
+
+.sidebar .list-group-item.settings{
+  font-size: 30px;
+  text-shadow: 0 0 10px #afb7e0;
+  font-weight: bolder;
 }
 
 .sidebar ul li a {
@@ -225,7 +299,6 @@ header .navbar .container-fluid #toggle-button {
   header .navbar {
     height: 90px;
   }
-
 }
 
 @media (min-width: 990px) {
@@ -239,8 +312,7 @@ header .navbar .container-fluid #toggle-button {
   }
 }
 
-
-@media (max-width:430px) {
+@media (max-width: 430px) {
   header .navbar {
     height: 80px;
   }
@@ -253,6 +325,4 @@ header .navbar .container-fluid #toggle-button {
     margin-top: 2.5%;
   }
 }
-
-
 </style>

@@ -1,15 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PagesContainer from '@/components/PagesContainer.vue'
+// import PagesContainer from '@/components/PagesContainer.vue'
 import QuiestionsComponent from '@/components/QuiestionsComponent.vue'
 import ReportsComponent from '@/components/ReportsComponent.vue'
 import LoginComponent from '@/components/LoginComponent.vue'
+import LandingPage from '@/views/LandingPage.vue'
+import SettingsComponent from '@/components/SettingsComponent.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      component: PagesContainer
+      component: LandingPage
     },
     {
       path: '/questions',
@@ -22,6 +24,10 @@ const router = createRouter({
     {
       path:'/login',
       component: LoginComponent
+    },
+    {
+      path:'/settings',
+      component:SettingsComponent
     },
   ],
 })

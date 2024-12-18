@@ -6,14 +6,16 @@ import * as echarts from 'echarts';
 const chart1 = ref<HTMLDivElement | null>(null);
 const chart2 = ref<HTMLDivElement | null>(null);
 
-const chart3 = ref<HTMLDivElement | null> (null);
+const chart3 = ref<HTMLDivElement | null>(null);
+
+const chartInstances: echarts.ECharts[] = [];
 
 // Instancias de los gráficos
 let chart1Instance: echarts.ECharts | null = null;
 let chart2Instance: echarts.ECharts | null = null;
 let chart3Instance: echarts.ECharts | null = null;
 
-// Configuración para el gráfico 1
+// Configuración para el gráfico 1 (Gráfico de Donut de MDA)
 const getOptionChart1 = (): echarts.EChartsOption => ({
   title: {
     text: 'Índice Madurez Digital Global (MDG)',
@@ -24,9 +26,8 @@ const getOptionChart1 = (): echarts.EChartsOption => ({
     trigger: 'item',
   },
   legend: {
-    show: false,
-    bottom: '5%',
-    left: 'center',
+    top: '90%',
+    left: 'center'
   },
   series: [
     {
@@ -42,20 +43,22 @@ const getOptionChart1 = (): echarts.EChartsOption => ({
           show: true,
           fontSize: 40,
           fontWeight: 'bold',
+          formatter: '{c}'
         },
       },
       labelLine: {
-        show: false,
+        show: true,
       },
       data: [
-        { value: 100, name: '100' },
-        { value: 102, name: '' },
+        { value: 25, name: 'IMD' },
+        { value: 100 - 25, name: '' },
       ],
     },
   ],
+  color: ['#4cbeed', '#dcdcdc'] // Colores personalizados
 });
 
-// Configuración para el gráfico 2
+// Configuración para el gráfico 2 (Gráfico de Barra de MDA)
 const getOptionChart2 = (): echarts.EChartsOption => ({
   tooltip: {
     trigger: 'axis',
@@ -69,9 +72,17 @@ const getOptionChart2 = (): echarts.EChartsOption => ({
     bottom: '10%',
     containLabel: true,
   },
+
   xAxis: [
     {
       type: 'value',
+      min: 0, // Valor mínimo del eje
+      max: 100, // Valor máximo del eje
+      interval: 25, // Intervalos entre los valores del eje
+      axisLabel: {
+        formatter: (value) => `${value.toFixed(2)}`, // Formatear las etiquetas con dos decimales
+      },
+
     },
   ],
   yAxis: [
@@ -94,10 +105,11 @@ const getOptionChart2 = (): echarts.EChartsOption => ({
 });
 
 
-// Configuración para el gráfico 3
+// Configuración para el gráfico 3 (Gráfico Radial de MDD)
 const getOptionChart3 = (): echarts.EChartsOption => ({
   title: {
-    text: 'Basic Radar Chart'
+    text: 'Basic Radar Chart',
+    left: 'center'
   },
   legend: {
     padding: [40, 15, 10, 15], // Márgenes: [arriba, derecha, abajo, izquierda]
@@ -148,6 +160,47 @@ const initCharts = () => {
     chart3Instance = echarts.init(chart3.value);
     chart3Instance.setOption(getOptionChart3());
   }
+
+
+  const chartContainers = ['chart3', 'chart4', 'chart5', 'chart6', 'chart7', 'chart8'];
+  const chartPersectiveNames = ['IMPD: Diseño organizacional', 'IMDP: Tecnologías e información estratégicas', 'IMDP: Competencias estratégicas',
+    'IMDP: Procesos', 'IMDP: Centralidad en el cliente', 'IMDP: Finanzas']
+  chartContainers.forEach((containerId, index) => {
+    const container = document.getElementById(containerId);
+    if (container) {
+      const chartInstance = echarts.init(container);
+
+      const option = {
+        title: {
+          text: chartPersectiveNames[index],
+          left: 'center',
+          textStyle: {
+            wordbreak: 'break-all',
+            fontSize: 18,
+            lineHeight: 35, // Ajustar el espacio entre líneas
+
+          }
+        },
+        legend: {
+          top: '80%',
+          left: 'center'
+        },
+        series: [
+          {
+            radius: ['23%', '40%']
+          }
+        ]
+      }
+
+      chartInstance.setOption(getOptionChart1());
+      chartInstance.setOption(option);
+      chartInstances.push(chartInstance);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    chartInstances.forEach(chart => chart.resize());
+  });
 };
 
 // Ajustar tamaño de los gráficos al redimensionar la ventana
@@ -176,7 +229,7 @@ onBeforeUnmount(() => {
 <template>
   <section class="contentPane">
     <div class="chart-div">
-      <h2>Resultados: Madurez Digital Global (MDG)</h2>
+      <h2>Resultados: Madurez Digital por ámbitos (MDA)</h2>
       <div class="chartContainer">
         <div ref="chart1" class="chart1"></div>
         <div ref="chart2" class="chart2"></div>
@@ -184,29 +237,39 @@ onBeforeUnmount(() => {
     </div>
 
 
-    <div class="chart-div">
-      <div ref="chart3" class="chart3"></div>
+    <div class="chart-divPerspective">
+      <h2>Resultados: Madurez Digital por perspectivas (MDA)</h2>
+      <div class="chartContainer">
+        <div id="chart3"  class="donutChartMDP"></div>
+        <div id="chart4"  class="donutChartMDP"></div>
+        <div id="chart5"  class="donutChartMDP"></div>
+        <div id="chart6"  class="donutChartMDP"></div>
+        <div id="chart7"  class="donutChartMDP"></div>
+        <div id="chart8"  class="donutChartMDP"></div>
+        <div ref="chart3" class="chart3"></div>
+      </div>
+
     </div>
   </section>
 
   <footer>
-      <div class="button">
-        <a href="#"><i class="bi bi-chevron-double-up"></i></a>
-      </div>
-      <div class="contenedor">
-        <div class="redes">
-          <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
-            <i class="bi bi-envelope"></i>
-          </a>
+    <div class="button">
+      <a href="#"><i class="bi bi-chevron-double-up"></i></a>
+    </div>
+    <div class="contenedor">
+      <div class="redes">
+        <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
+          <i class="bi bi-envelope"></i>
+        </a>
 
-          <a href="https://www.etecsa.cu/" target="_blank">
-            <img src="/logoheader.png" alt="página oficial de ETECSA" />
-          </a>
-        </div>
+        <a href="https://www.etecsa.cu/" target="_blank">
+          <img src="/logoheader.png" alt="página oficial de ETECSA" />
+        </a>
       </div>
+    </div>
 
-      <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
-    </footer>
+    <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+  </footer>
 
 </template>
 
@@ -241,16 +304,37 @@ onBeforeUnmount(() => {
   border-radius: 5px;
   filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
   text-align: center;
+}
 
+.chart-divPerspective {
+  flex-wrap: wrap;
+  margin-top: 50px;
+  position: relative;
+  width: 80%;
+  height: 1150px;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #070707;
+  border-radius: 5px;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+  text-align: center;
+}
+
+.donutChartMDP {
+  width: 30%; /* Ancho predeterminado para pantallas grandes */
+  height: 350px;
 }
 
 .chartContainer {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
-.chart1, .chart2, .chart3 {
+.chart1,
+.chart2,
+.chart3,
+.donutChartMPD {
   padding: 10px;
   width: 45%;
   min-height: 350px;
@@ -262,10 +346,17 @@ onBeforeUnmount(() => {
     flex-direction: column;
   }
 
-  .chart1, .chart2, .chart3 {
+  .chart1,
+  .chart2,
+  .chart3 {
     width: 100%;
     margin-bottom: 1rem;
     flex: 1 1 100%;
+  }
+
+  .donutChartMDP {
+    width: 100%; /* Ancho del 100% cuando el dispositivo tenga 990px o menos */
+    margin-bottom: 20px; /* Espacio entre gráficas */
   }
 
   .contentPane {
@@ -273,8 +364,8 @@ onBeforeUnmount(() => {
     margin-left: 25px;
     padding-left: 10px;
     margin-bottom: 300px;
-    height: 200vh;
   }
+
   .chart-div {
     position: relative;
     margin-top: 10px;
@@ -282,79 +373,91 @@ onBeforeUnmount(() => {
     padding-top: 5px;
     height: 150vh;
   }
+
+  .chart-divPerspective {
+  margin-top: 50px;
+  position: relative;
+  width: 80%;
+  height: 200%;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #070707;
+  border-radius: 5px;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+  text-align: center;
+}
 }
 
 /* Footer  */
 footer {
 
-    padding: 40px 0 20px 0;
-    width: 100%;
-    background-color: rgb(0, 0, 102);
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    bottom: 0;
-    z-index: 110;
+  padding: 40px 0 20px 0;
+  width: 100%;
+  background-color: rgb(0, 0, 102);
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  z-index: 110;
 }
 
 footer .contenedor {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-self: center;
-    margin-bottom: 30px;
-    margin-left: 30px;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-self: center;
+  margin-bottom: 30px;
+  margin-left: 30px;
+  justify-content: center;
+  align-items: center;
 }
 
 footer .button {
-    font-size: 30px;
-    justify-self: center;
-    margin-top: -85px;
-    width: 13%;
-    background-color: #39c;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
+  font-size: 30px;
+  justify-self: center;
+  margin-top: -85px;
+  width: 13%;
+  background-color: #39c;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
 }
 
 footer .button i {
-    color: antiquewhite;
-    ;
+  color: antiquewhite;
+  ;
 }
 
 footer .contenedor .redes {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 footer .contenedor .redes img {
-    width: 100%;
+  width: 100%;
 }
 
 footer .contenedor .redes i {
-    color: antiquewhite;
-    font-size: 30px;
+  color: antiquewhite;
+  font-size: 30px;
 
 }
 
 footer .contenedor .redes {
-    a {
-        margin-left: 7%;
-    }
+  a {
+    margin-left: 7%;
+  }
 
-    .mail {
-        margin-left: 20%;
-    }
+  .mail {
+    margin-left: 20%;
+  }
 
 }
 
 footer p {
 
-    color: antiquewhite;
+  color: antiquewhite;
 }
 </style>
