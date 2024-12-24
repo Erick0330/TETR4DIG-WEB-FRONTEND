@@ -1,6 +1,8 @@
 # TETR4DIG-WEB
 
-<img src="Captura de pantalla (52).png" width="48%">
+Web version built in Vue.js of the management consulting model for digital transformation: TETR4DIG
+
+<img src="Captura de pantalla (52).png">
 
 
 ## Recommended IDE Setup
