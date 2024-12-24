@@ -1,6 +1,7 @@
 # TETR4DIG-WEB
 
-This template should help get you started developing with Vue 3 in Vite.
+<img src="Captura de pantalla (52).png" width="48%">
+
 
 ## Recommended IDE Setup
 
