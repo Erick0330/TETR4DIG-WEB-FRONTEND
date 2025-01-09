@@ -1,6 +1,6 @@
 # TETR4DIG-WEB
 
-Web version built in Vue.js of the management consulting model for digital transformation: TETR4DIG
+Academic web version built in Vue.js of the management consulting model for digital transformation: TETR4DIG
 
 <img src="Captura de pantalla (52).png">
 
