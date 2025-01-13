@@ -1,6 +1,9 @@
 # TETR4DIG-WEB
 
-This template should help get you started developing with Vue 3 in Vite.
+Academic web version built in Vue.js of the management consulting model for digital transformation: TETR4DIG
+
+<img src="Captura de pantalla (52).png">
+
 
 ## Recommended IDE Setup
 
