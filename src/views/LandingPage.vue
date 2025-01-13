@@ -19,7 +19,7 @@ const goToLogin = () => {
       <a href="#about" class="know">
         <p>CONÓCENOS</p>
       </a>
-      <a href="#about">
+      <a href="#start">
         <ArrowComponent />
       </a>
     </div>
@@ -283,7 +283,7 @@ const goToLogin = () => {
       </div>
     </div>
 
-    <div @click="goToLogin" class="start-container">
+    <div id="start" @click="goToLogin" class="start-container">
       <a class="start">
         <p>Empezar</p>
       </a>
