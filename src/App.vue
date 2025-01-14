@@ -1,13 +1,13 @@
 <template>
   <div class="page-wrapper">
-    <PagesContainer/>
+    <router-view></router-view>
   </div>
 
 
 </template>
 
 <script setup lang="ts">
-  import PagesContainer from './components/PagesContainer.vue';
+
 </script>
 
 <style scoped>

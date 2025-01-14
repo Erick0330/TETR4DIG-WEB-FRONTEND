@@ -1,5 +1,6 @@
 <script setup lang="ts">
-
+import HeaderComponent from './HeaderComponent.vue';
+import SideBarComponent from './SideBarComponent.vue';
 </script>
 
 <template>
@@ -7,6 +8,8 @@
 
 
   <!--Tabla de Consultoria-->
+<HeaderComponent/>
+<SideBarComponent/>
 
   <div class="container mt-5">
     <div class="texto">
