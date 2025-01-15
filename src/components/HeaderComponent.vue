@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { useCurrentTetraStore } from "../stores/StoreT";
 import { useRouter } from "vue-router";
 
@@ -7,7 +6,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 // Controla el estado del sidebar (abierto/cerrado)
-const isSidebarActive = ref(false);
+// const isSidebarActive = computed(()=> state.isSideBarActive);
 
 const state = useCurrentTetraStore();
 //const currentView = computed(() => state.currentView);
@@ -24,8 +23,8 @@ const goToLP = () => {
 }
 
 // Función para alternar la clase "active" en el sidebar
-const toggleSidebar = () => {
-  isSidebarActive.value = !isSidebarActive.value;
+const activeSideBar = () => {
+  state.changeSideBar();
 };
 </script>
 
@@ -36,7 +35,7 @@ const toggleSidebar = () => {
     <header class="navbar navbar-expand-lg bd-navbar sticky-top">
       <nav class="navbar bg fixed-top">
         <div class="container-fluid">
-          <div id="toggle-button" @click="toggleSidebar">
+          <div id="toggle-button" @click="activeSideBar()">
             <i class="bi bi-list"></i>
           </div>
 

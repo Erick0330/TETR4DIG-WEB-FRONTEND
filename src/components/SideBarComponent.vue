@@ -8,7 +8,7 @@ const router = useRouter();
 // Controla el estado del sidebar (abierto/cerrado)
 const state = useCurrentTetraStore();
 
-
+const isSidebarActive = computed(()=> state.getIsSideBarActive())
 
 const currentView = computed(() => state.currentView);
 const goToReports = () => {
@@ -29,7 +29,7 @@ const goToSettings = () => {
 <template>
   <!-- SideBar -->
 
-    <div class="sidebar"  id="sidebar">
+    <div class="sidebar" :class="{ active: isSidebarActive }"  id="sidebar">
       <ul class="list-group list-group-flush">
         <li class="list-group-item" :class="{ 'questions': currentView === 'Questions' }">
           <a @click="goToQuestions">Cuestionario</a>

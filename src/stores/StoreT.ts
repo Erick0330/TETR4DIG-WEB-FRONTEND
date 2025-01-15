@@ -29,18 +29,19 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     changeToLP() {
       this.currentView = 'LandingPage';
     },
-
     setToken(token: string) {
       this.token = token;
-      console.log(token)
       localStorage.setItem('token', token); // Guardar en el localStorage si quieres persistir el token
     },
     getToken() {
       return this.token || localStorage.getItem('token'); // Obtiene el token desde el estado o localStorage
     },
-
-    toggleSidebar() {
+    getIsSideBarActive(){
+      return this.isSideBarActive;
+    },
+    changeSideBar() {
       this.isSideBarActive = !this.isSideBarActive;
+      console.log(this.isSideBarActive);
     },
 
   },
