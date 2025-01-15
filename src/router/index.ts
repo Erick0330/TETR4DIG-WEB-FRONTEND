@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 // import PagesContainer from '@/components/PagesContainer.vue'
-import QuiestionsComponent from '@/components/QuiestionsComponent.vue'
+import QuestionsComponent from '@/components/QuestionsComponent.vue'
 import ReportsComponent from '@/components/ReportsComponent.vue'
 import LoginComponent from '@/components/LoginComponent.vue'
 import LandingPage from '@/views/LandingPage.vue'
 import SettingsComponent from '@/components/SettingsComponent.vue'
 import OTPComponent from '@/components/OTPComponent.vue'
+import SettingsComponentUser from '@/components/SettingsComponentUser.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,7 +17,7 @@ const router = createRouter({
     },
     {
       path: '/questions',
-      component: QuiestionsComponent
+      component: QuestionsComponent
     },
     {
       path:'/reports',
@@ -34,6 +35,10 @@ const router = createRouter({
       path:'/settings',
       component:SettingsComponent
     },
+    {
+      path:'/settingsUser',
+      component: SettingsComponentUser
+    }
   ],
 })
 

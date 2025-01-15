@@ -173,7 +173,6 @@ const initCharts = () => {
     if (container) {
       const chartInstance = echarts.init(container);
 
-
       const option = {
         title: {
           text: chartPersectiveNames[index],
@@ -232,8 +231,8 @@ onBeforeUnmount(() => {
 
 <template>
 
-<HeaderComponent/>
-<SideBarComponent/>
+  <HeaderComponent />
+  <SideBarComponent />
 
 
   <section class="contentPane">
@@ -249,15 +248,68 @@ onBeforeUnmount(() => {
     <div class="chart-divPerspective">
       <h2>Resultados: Madurez Digital por perspectivas (MDA)</h2>
       <div class="chartContainer">
-        <div id="chart3"  class="donutChartMDP"></div>
-        <div id="chart4"  class="donutChartMDP"></div>
-        <div id="chart5"  class="donutChartMDP"></div>
-        <div id="chart6"  class="donutChartMDP"></div>
-        <div id="chart7"  class="donutChartMDP"></div>
-        <div id="chart8"  class="donutChartMDP"></div>
+        <div id="chart3" class="donutChartMDP"></div>
+        <div id="chart4" class="donutChartMDP"></div>
+        <div id="chart5" class="donutChartMDP"></div>
+        <div id="chart6" class="donutChartMDP"></div>
+        <div id="chart7" class="donutChartMDP"></div>
+        <div id="chart8" class="donutChartMDP"></div>
         <div ref="chart3" class="chart3"></div>
       </div>
 
+    </div>
+    <div class="chart-divDimension">
+      <table class="table table-bordered">
+        <thead>
+          <tr class="encab table-primary">
+            <th>Perspectivas</th>
+            <th>Madurez Digital (MDr) media real de autoevaluacion</th>
+            <th>Índice de Madurez Digital (IMD)%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Liderazgo Digital</td>
+            <td>1.0</td>
+            <td>25.0</td>
+          </tr>
+          <tr>
+            <td>Cultura y clima Digital</td>
+            <td>0.0</td>
+            <td>50.0</td>
+          </tr>
+          <tr>
+            <td>Alineamiento estratégico e integración digital</td>
+            <td>1.0</td>
+            <td>0.0</td>
+          </tr>
+          <tr>
+            <td>Trabajo inteligente(Smart working)</td>
+            <td>1.0</td>
+            <td>25.0</td>
+          </tr>
+          <tr>
+            <td>Sistema y aplicaciones de TI</td>
+            <td>2.0</td>
+            <td>50.0</td>
+          </tr>
+          <tr>
+            <td>Migración a la nube / Cloud Computing</td>
+            <td>0.2</td>
+            <td>0.0</td>
+          </tr>
+          <tr>
+            <td>Big Data, Data Analytics, Al / ML y GPS</td>
+            <td>0.4</td>
+            <td>50.0</td>
+          </tr>
+          <tr>
+            <td>Hibridación mundo físico y digital</td>
+            <td>0.6</td>
+            <td>25.0</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -285,6 +337,12 @@ onBeforeUnmount(() => {
 
 
 <style scoped>
+.table {
+  margin: 10%;
+  text-align: center;
+  width: 80%;
+}
+
 .contentPane {
   margin: 100px 50px;
   margin-bottom: 300px;
@@ -315,6 +373,19 @@ onBeforeUnmount(() => {
   text-align: center;
 }
 
+.chart-divDimension {
+  flex-wrap: wrap;
+  margin-top: 50px;
+  position: relative;
+  width: 80%;
+  height: 40%;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #070707;
+  border-radius: 5px;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+  text-align: center;
+}
+
 .chart-divPerspective {
   flex-wrap: wrap;
   margin-top: 50px;
@@ -329,7 +400,8 @@ onBeforeUnmount(() => {
 }
 
 .donutChartMDP {
-  width: 30%; /* Ancho predeterminado para pantallas grandes */
+  width: 30%;
+  /* Ancho predeterminado para pantallas grandes */
   height: 350px;
 }
 
@@ -350,6 +422,19 @@ onBeforeUnmount(() => {
 }
 
 /* Responsividad */
+
+@media (max-width: 600px) {
+  .chart-divDimension{
+    width: 100%;
+    margin-right: 30px;
+  }
+  .table {
+    width: 10%;
+    margin: 0;
+  }
+}
+
+
 @media (max-width: 990px) {
   .chartContainer {
     flex-direction: column;
@@ -364,8 +449,10 @@ onBeforeUnmount(() => {
   }
 
   .donutChartMDP {
-    width: 100%; /* Ancho del 100% cuando el dispositivo tenga 990px o menos */
-    margin-bottom: 20px; /* Espacio entre gráficas */
+    width: 100%;
+    /* Ancho del 100% cuando el dispositivo tenga 990px o menos */
+    margin-bottom: 20px;
+    /* Espacio entre gráficas */
   }
 
   .contentPane {
@@ -384,16 +471,16 @@ onBeforeUnmount(() => {
   }
 
   .chart-divPerspective {
-  margin-top: 50px;
-  position: relative;
-  width: 80%;
-  height: 200%;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid #070707;
-  border-radius: 5px;
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
-  text-align: center;
-}
+    margin-top: 50px;
+    position: relative;
+    width: 80%;
+    height: 200%;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #070707;
+    border-radius: 5px;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+    text-align: center;
+  }
 }
 
 /* Footer  */
@@ -407,8 +494,10 @@ footer {
   align-items: center;
   left: 0;
   bottom: 0;
-  z-index: 10; /* Asegura que esté encima del footer */
-  position: relative; /* Ya configurado correctamente */
+  z-index: 10;
+  /* Asegura que esté encima del footer */
+  position: relative;
+  /* Ya configurado correctamente */
 }
 
 footer .contenedor {

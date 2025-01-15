@@ -10,8 +10,6 @@ import SideBarComponent from './SideBarComponent.vue';
   <HeaderComponent />
   <SideBarComponent />
   <!--Tabla de Consultoria-->
-<HeaderComponent/>
-<SideBarComponent/>
 
   <div class="container ">
     <div class="texto">
@@ -19,11 +17,12 @@ import SideBarComponent from './SideBarComponent.vue';
     </div>
     <div class="col">
 
-      <table class="table table-bordered">
-        <ul class="lista_">
+      <ul class="lista_">
           <li>PP - Diseño Organizacional</li>
           <li>DD - Liderazgo Digital</li>
         </ul>
+
+      <table class="table table-bordered">
         <thead>
           <tr class="encab table-primary">
             <th>No.</th>
@@ -243,9 +242,11 @@ form-select {
   }
 
   .lista_ {
+
     padding-left: 10px;
     margin: 40px;
     margin-top: 60px;
+
   }
 
   @media screen and (max-width: 650px) {}
