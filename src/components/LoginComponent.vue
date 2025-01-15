@@ -271,4 +271,19 @@ const toggleCreateAccountHandler = () => {
 #bar:after {
   right: -38px;
 }
+
+/* Botones transparentes */
+.transparent-button {
+  background: none;
+  border: none;
+  color: #00ff7f;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.transparent-button:hover {
+  color: #ffffff;
+}
 </style>
