@@ -1,164 +1,147 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import HeaderComponent from './HeaderComponent.vue';
 import SideBarComponent from './SideBarComponent.vue';
+import { getAmbits } from '@/services/ambitsService';
+import type { Ambit } from '@/types/ambit';
+import type { Perspective } from '@/types/perspective';
+import type { Dimension } from '@/types/dimension';
+import { getPerspectiveByIdAmbit } from '@/services/perspectivesService';
+import { getDimensionByIdPerspective } from '@/services/dimensionsService';
+import { getQuestionByIdDimension, updateQuestion } from '@/services/questionsService';
+import type { Question } from '@/types/question';
 import { useCurrentTetraStore } from '@/stores/StoreT';
+
 
 const state = useCurrentTetraStore();
 
-onMounted(() =>{
+// Estados reactivos
+const ambits = ref<Ambit[]>([]);
+const currentAmbitIndex = ref(0);
+const perspectives = ref<Perspective[]>([]);
+const currentPerspectiveIndex = ref(0);
+const dimensions = ref<Dimension[]>([]);
+const currentDimensionIndex = ref(0);
+const questions = ref<Question[]>([]);
+
+// Cargar ámbitos, perspectivas y dimensiones
+const loadData = async () => {
+  try {
+    ambits.value = await getAmbits();
+    if (ambits.value.length > 0) {
+      await loadPerspectives(ambits.value[currentAmbitIndex.value].id_ambit);
+    }
+  } catch (error) {
+    console.error('Error al cargar los ámbitos:', error);
+  }
+};
+
+const loadPerspectives = async (ambitId: number) => {
+  try {
+    perspectives.value = await getPerspectiveByIdAmbit(ambitId);
+    if (perspectives.value.length > 0) {
+      await loadDimensions(perspectives.value[currentPerspectiveIndex.value].id_perspective);
+    }
+  } catch (error) {
+    console.error('Error al cargar las perspectivas:', error);
+  }
+};
+
+const loadDimensions = async (perspectiveId: number) => {
+  try {
+    dimensions.value = await getDimensionByIdPerspective(perspectiveId);
+    if (dimensions.value.length > 0) {
+      await loadQuestions(dimensions.value[currentDimensionIndex.value].id_dimension);
+    }
+  } catch (error) {
+    console.error('Error al cargar las dimensiones:', error);
+  }
+};
+
+const loadQuestions = async (dimensionId: number) => {
+  try {
+    questions.value = await getQuestionByIdDimension(dimensionId);
+  } catch (error) {
+    console.error('Error al cargar las preguntas:', error);
+  }
+};
+
+// Cambiar de dimensión y guardar datos
+const goToNextDimension = async () => {
+  try {
+    // Actualizar las preguntas antes de pasar a la siguiente dimensión
+
+    for (const question of questions.value) {
+      const { id_question, id_dimension, question: questionText, points } = question;
+      await updateQuestion(id_question, { id_dimension, question: questionText, points });
+    }
+    questions.value = []; // Limpiar los valores actualizados
+
+    // Cambiar a la siguiente dimensión
+    if (currentDimensionIndex.value < dimensions.value.length - 1) {
+      currentDimensionIndex.value++;
+      await loadQuestions(dimensions.value[currentDimensionIndex.value].id_dimension);
+    } else if (currentPerspectiveIndex.value < perspectives.value.length - 1) {
+      currentPerspectiveIndex.value++;
+      currentDimensionIndex.value = 0;
+      await loadDimensions(perspectives.value[currentPerspectiveIndex.value].id_perspective);
+    } else if (currentAmbitIndex.value < ambits.value.length - 1) {
+      currentAmbitIndex.value++;
+      currentPerspectiveIndex.value = 0;
+      currentDimensionIndex.value = 0;
+      await loadPerspectives(ambits.value[currentAmbitIndex.value].id_ambit);
+    } else {
+      alert('Has completado todas las preguntas.');
+    }
+  } catch (error) {
+    console.error('Error al actualizar o cambiar dimensión:', error);
+  }
+};
+
+onMounted( () => {
+  loadData();
   state.changeToQuestions();
-})
+} );
 </script>
 
 <template>
-
-
   <HeaderComponent />
   <SideBarComponent />
-  <!--Tabla de Consultoria-->
 
-  <div class="container ">
+  <div class="container">
     <div class="texto">
-      <h2 class="consultoria">Tabla de Consultoria</h2>
+      <h2 class="consultoria">Tabla de Consultoría</h2>
+      <p class="ambit-title">Ámbito: {{ ambits[currentAmbitIndex]?.ambit }}</p>
+      <p class="perspective-title">Perspectiva: {{ perspectives[currentPerspectiveIndex]?.perspective_name }}</p>
+      <p class="dimension-title">Dimensión: {{ dimensions[currentDimensionIndex]?.name_dimension }}</p>
     </div>
-    <div class="col">
 
-      <table class="table table-bordered">
-        <ul class="lista_">
-          <li>PP - Diseño Organizacional</li>
-          <li>DD - Liderazgo Digital</li>
-        </ul>
-        <thead>
-          <tr class="encab table-primary">
-            <th>No.</th>
-            <th>Requisitos, iniciativas y
-              buenas práticas de traformación digital(DO/LD)</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>
-              La entidad diagnostica la situación actual y la madurez digital; identifica fortalezas, debilidades,
-              oportunidades, amenazas y riesgos de la transformación digital.</td>
-            <td>
-              <select class="form-select" aria-label="Seleccionar valor">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>
-              La alta dirección asegura que el propósito organizacional es dinámico y sensible al contexto cambiante y
-              digital, con una visión y misión documentadas, y que está disponible para todas las partes interesadas.
-            </td>
-            <td>
-              <select class="form-select" aria-label="Seleccionar valor">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>
-              La alta dirección asegura que se identifiquen e involucren las partes interesadas en el contexto digital
-              (p. ej. clientes, personal, proveedores, accionistas e inversionistas, sindicato, reguladores,
-              administración pública, gobierno, etc.) y el ambiente natural.</td>
-            <td>
-              <select class="form-select" aria-label="Seleccionar valor">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>
-              La alta dirección redefine digitalmente el modelo y objetivos de generación de valor, y considera el
-              contexto, expectativas de partes interesadas, marco regulatorio, cambio tecnológico, ambiente natural
-              presente y futuro, asuntos socio-económicos, KPI, etc.</td>
-            <td>
-              <select class="form-select" aria-label="Seleccionar valor">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>
-              La alta dirección establece resultados estratégicos digitales claros y compatibles con la dirección
-              estratégica de la organización, considerando contextos interno y externo, políticas de gobernanza
-              digital y las capacidades actuales y futuras de TIC y datos.</td>
-            <td>
-              <select class="form-select" aria-label="Seleccionar valor">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>6</td>
-            <td>
-              La entidad define como un objetivo de digitalización la mejora de la experiencia del cliente, por las
-              vías de personalizar y adaptar productos/servicios, brindar atención a medida y omnicanal, así como de
-              los puntos de contacto con partes interesadas. </td>
-            <td>
-              <select class="form-select" aria-label="Seleccionar valor">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>7</td>
-            <td>
-              La entidad define como un objetivo de digitalización una mayor flexibilidad y eficiencia en operaciones,
-              que posibiliten la personalización, la creación de productos/servicios digitales y/o la adaptación a las
-              capacidades digitales que demanden los clientes.</td>
-            <td>
-              <select class="form-select" aria-label="Seleccionar valor">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3" class="text-end">
-              <button type="button" class="btn btn-primary">Enviar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <table class="table table-bordered">
+      <thead>
+        <tr class="encab table-primary">
+          <th>No.</th>
+          <th>Pregunta</th>
+          <th>Puntos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(question, index) in questions" :key="question.id_question">
+          <td>{{ index + 1 }}</td>
+          <td>{{ question.question }}</td>
+          <td>
+            <select v-model="question.points" class="form-select" aria-label="Seleccionar valor">
+              <option value="" disabled>Seleccione</option>
+              <option v-for="i in 5" :key="i" :value="i - 1">{{ i - 1 }}</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="text-end">
+      <button @click="goToNextDimension" class="btn btn-primary">Siguiente Dimensión</button>
     </div>
   </div>
-
 
   <footer>
     <div class="button">
@@ -178,38 +161,63 @@ onMounted(() =>{
 
     <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
   </footer>
-
 </template>
 
-<style scoped>
-/*Tabla de consultoria*/
 
+<style scoped>
+/* General container styles */
 .container {
+  margin-top: 100px;
   margin-bottom: 100px;
   width: 100%;
-  height: 100%;
+  min-height: 70vh;
 }
 
+/* Title for consultoria */
 .consultoria {
   text-align: center;
   font-size: 40px;
   margin-top: 70px;
+  color: #003366;
 }
 
-.table {
-  width: 70%;
-  padding: 70px;
+/* Title styles for perspective and dimension */
+.ambit-title,
+.perspective-title,
+.dimension-title {
   text-align: center;
-  margin: 150px auto;
-  margin-top: 40px;
+  font-size: 24px;
+  margin-top: 20px;
+  font-weight: bold;
+  color: #003366;
+  text-transform: uppercase;
+}
+
+.perspective-title {
+  font-size: 26px;
+  color: #0066cc;
+}
+
+.dimension-title {
+  font-size: 28px;
+  color: #0b84fc;
+}
+
+/* Styling for the table */
+.table {
+  width: 80%;
+  padding: 10px;
+  margin: 40px auto;
+  text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid rgb(237, 237, 248);
-  background-color: rgb(0, 0, 102);
+  background-color: #f8f9fa;
   border-collapse: collapse;
 }
 
 .encab {
-  background-color: rgb(0, 0, 102);
+  background-color: #003366;
+  color: white;
 }
 
 th,
@@ -217,44 +225,33 @@ td {
   max-width: 400px;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  padding: 12px;
 }
 
 form-select {
   text-align: center;
 }
 
-.lista_ {
-  margin-top: 60px;
-  text-align: center;
-  font-weight: 700;
-  color: rgb(0, 0, 102);
-  list-style-type: none;
-  font-size: 17px;
-}
-
-.row {
-  width: 100%;
-}
-
-/* Estilos para pantallas pequeñas de la Tabla de Consultoria*/
+/* Adjustments for small screens */
 @media screen and (max-width: 650px) {
   .container {
-    margin-bottom: 190px;
+    margin-bottom: 150px;
   }
 
   .table {
-    margin: 60px auto;
-    width: 10%;
+    margin: 40px auto;
+    width: 100%;
   }
 
-  .lista_ {
-    padding-left: 10px;
-    margin: 40px;
-    margin-top: 60px;
+  .ambit-title,
+  .perspective-title,
+  .dimension-title {
+    font-size: 20px;
   }
 
-  @media screen and (max-width: 650px) {}
-
+  .consultoria {
+    font-size: 35px;
+  }
 }
 
 
@@ -267,8 +264,10 @@ footer {
   align-items: center;
   left: 0;
   bottom: 0;
-  z-index: 10; /* Asegura que esté encima del footer */
-  position: relative; /* Ya configurado correctamente */
+  z-index: 10;
+  /* Asegura que esté encima del footer */
+  position: relative;
+  /* Ya configurado correctamente */
 }
 
 footer .contenedor {

@@ -767,7 +767,7 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-top: 80px;
-
+  background-color: white;
 }
 
 .sectionCU {
@@ -777,6 +777,7 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
   padding: 20px;
   margin-top: 80px;
   margin-bottom: 80px;
+  background-color: white;
 }
 
 .add-question-form {

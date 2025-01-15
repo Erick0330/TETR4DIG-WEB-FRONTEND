@@ -3,10 +3,6 @@ import { defineStore } from 'pinia';
 export const useCurrentTetraStore = defineStore('StoreT', {
   state: () => ({
     currentView: 'LandingPage',
-    indicadores: [
-      'Consulta de valores',
-      'Resultados de los valores',
-    ],
     email: '', // Email del usuario autenticado
     token: '', // Token JWT del usuario
     isAuthenticated: false, // Estado de autenticación

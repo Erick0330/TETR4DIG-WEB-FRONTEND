@@ -12,3 +12,4 @@ export interface createQuestionDto {
   id_dimension: number;
   question: string;
 }
+
