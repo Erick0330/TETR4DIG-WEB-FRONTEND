@@ -1,4 +1,4 @@
-import type { createPerspectiveDto, Perspective } from '@/types/perspective';
+import type { createPerspectiveDto, Perspective, updatePerspectiveDto } from '@/types/perspective';
 import api from './api';
 
 
@@ -15,7 +15,7 @@ export const createPerspective = async (perspective: createPerspectiveDto): Prom
 };
 
 
-export const updatePerspective = async (id: number, perspective: createPerspectiveDto): Promise<Perspective> => {
+export const updatePerspective = async (id: number, perspective: updatePerspectiveDto): Promise<Perspective> => {
   const response = await api.patch(`/perspective/${id}`, perspective);
   return response.data;
 };
@@ -28,5 +28,10 @@ export const deletePerspective = async (id: number): Promise<void> => {
 
 export const getPerspectiveById = async (id: number): Promise<Perspective> => {
   const response = await api.get(`/perspective/${id}`);
+  return response.data;
+};
+
+export const getPerspectiveByIdAmbit = async (id: number): Promise<Perspective[]> => {
+  const response = await api.get(`/perspective/ambit/${id}`);
   return response.data;
 };

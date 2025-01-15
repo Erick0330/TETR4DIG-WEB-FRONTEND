@@ -29,3 +29,8 @@ export const getQuestionById = async (id: number): Promise<Question> => {
   const response = await api.get(`/questions/${id}`);
   return response.data;
 };
+
+export const getQuestionByIdDimension = async (id: number): Promise<Question[]> => {
+  const response = await api.get(`/questions/dimension/${id}`);
+  return response.data;
+};

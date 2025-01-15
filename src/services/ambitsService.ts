@@ -1,5 +1,5 @@
 import api from './api';
-import type { Ambit, createAmbitDto } from '@/types/ambit';
+import type { Ambit, createAmbitDto, updateAmbitDto } from '@/types/ambit';
 
 
 
@@ -15,7 +15,7 @@ export const createAmbit = async (ambit: createAmbitDto): Promise<Ambit> => {
 };
 
 
-export const updateAmbit = async (id: number, ambit: createAmbitDto): Promise<Ambit> => {
+export const updateAmbit = async (id: number, ambit: updateAmbitDto): Promise<Ambit> => {
   const response = await api.patch(`/ambit/${id}`, ambit);
   return response.data;
 };
