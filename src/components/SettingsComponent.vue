@@ -1,25 +1,101 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { getQuestions } from "@/services/questionsService";
+import { getQuestions, createQuestion, updateQuestion, deleteQuestion } from "@/services/questionsService";
 import type { Question } from "@/types/question";
+import SideBarComponent from "./SideBarComponent.vue";
+import HeaderComponent from "./HeaderComponent.vue";
 
-// Almacén de preguntas
-const preguntas = ref<Question[]>([]);
 
-// Cargar preguntas desde la API al montar el componente
-const cargarPreguntas = async () => {
+const questions = ref<Question[]>([]);
+const newQuestionText = ref<string>(""); // Texto de la nueva pregunta
+const newQuestionPoints = ref<number>(0); // Cantidad de puntos
+const errorMessage = ref<string | null>(null);
+const editingQuestion = ref<{ id: number; question: string; points: number } | null>(null); // Control de edición
+
+onMounted(async () => {
   try {
-    preguntas.value = await getQuestions();
+    questions.value = await getQuestions();
+    questions.value.sort((a, b) => a.id_question - b.id_question); // Ordenar preguntas por ID de menor a mayor
   } catch (error) {
     console.error("Error al cargar las preguntas:", error);
+    errorMessage.value = "Error al cargar las preguntas.";
+  }
+});
+
+// Función para crear una nueva pregunta
+const handleCreateQuestion = async () => {
+  if (!newQuestionText.value.trim()) {
+    alert("El texto de la pregunta no puede estar vacío.");
+    return;
+  }
+
+  try {
+    const newQuestion = await createQuestion({
+      points: newQuestionPoints.value, // Valor de los puntos
+      id_dimension: 1, // Ajusta este valor según tus necesidades
+      question: newQuestionText.value,
+    });
+
+    questions.value.push(newQuestion); // Actualiza la lista local de preguntas
+    newQuestionText.value = ""; // Limpia el campo de texto
+    newQuestionPoints.value = 10; // Resetea los puntos a su valor predeterminado
+  } catch (error) {
+    console.error("Error al crear la pregunta:", error);
+    errorMessage.value = "Error al crear la pregunta.";
   }
 };
 
-// Ejecutar al montar el componente
-onMounted(cargarPreguntas);
+// Función para editar una pregunta
+const handleEditQuestion = (id: number, question: string, points: number) => {
+  // Al pulsar el botón de editar, el campo se vuelve editable
+  if (editingQuestion.value?.id === id) {
+    // Si ya se está editando esta pregunta, guarda los cambios
+    updateQuestion(id, {
+      question: editingQuestion.value.question,
+      points: editingQuestion.value.points,
+      id_dimension: 1,
+    })
+      .then((updatedQuestion) => {
+        const index = questions.value.findIndex(q => q.id_question === id);
+        if (index !== -1) {
+          questions.value[index] = updatedQuestion; // Actualiza la lista con la pregunta modificada
+        }
+        editingQuestion.value = null; // Termina la edición
+      })
+      .catch((error) => {
+        console.error("Error al editar la pregunta:", error);
+        errorMessage.value = "Error al editar la pregunta.";
+      });
+  } else {
+    // Si no se está editando esta pregunta, la selecciona para editar
+    editingQuestion.value = { id, question, points };
+  }
+};
+
+// Función para eliminar una pregunta
+const handleDeleteQuestion = async (id: number) => {
+  try {
+    await deleteQuestion(id); // Elimina la pregunta desde el servidor
+    questions.value = questions.value.filter(q => q.id_question !== id); // Elimina la pregunta de la lista local
+  } catch (error) {
+    console.error("Error al eliminar la pregunta:", error);
+    errorMessage.value = "Error al eliminar la pregunta.";
+  }
+};
+
+// Función para manejar el evento de 'Enter' en los inputs de edición
+const handleKeydown = (event: KeyboardEvent, id: number) => {
+  if (event.key === "Enter") {
+    handleEditQuestion(id, editingQuestion.value!.question, editingQuestion.value!.points);
+  }
+};
 </script>
 
+
 <template>
+  <HeaderComponent/>
+  <SideBarComponent/>
+
   <div class="main">
     <section class="preguntas">
       <div class="container">
@@ -29,31 +105,154 @@ onMounted(cargarPreguntas);
             <tr class="encab table-primary">
               <th>No.</th>
               <th>Pregunta</th>
+              <th>Puntos</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(pregunta, index) in preguntas" :key="pregunta.id_question">
-              <td>{{ index + 1 }}</td>
-              <td>{{ pregunta.question }}</td>
+            <tr v-for="(pregunta) in questions" :key="pregunta.id_question">
+              <td>{{ pregunta.id_question }}</td>
               <td>
-                <button title="Editar">
+                <input
+                  v-if="editingQuestion?.id === pregunta.id_question"
+                  v-model="editingQuestion.question"
+                  @keydown="handleKeydown($event, pregunta.id_question)"
+                  class="form-control"
+                />
+                <span v-else>{{ pregunta.question }}</span>
+              </td>
+              <td>
+                <input
+                  v-if="editingQuestion?.id === pregunta.id_question"
+                  v-model="editingQuestion.points"
+                  type="number"
+                  class="form-control"
+                />
+                <span v-else>{{ pregunta.points }}</span>
+              </td>
+              <td>
+                <button @click="handleEditQuestion(pregunta.id_question, pregunta.question, pregunta.points)" title="Editar">
                   <img src="/img/BxsEdit.svg" alt="Editar" />
                 </button>
-                <button title="Eliminar">
+                <button @click="handleDeleteQuestion(pregunta.id_question)" title="Eliminar">
                   <img src="/img/MaterialSymbolsLightDelete.svg" alt="Eliminar" />
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
-        <button class="add-button" title="Agregar">
-          <img src="/img/TypcnPlus.svg" alt="Agregar" />
-        </button>
+        <div class="add-question-form">
+          <button class="add-button" @click="handleCreateQuestion" title="Agregar">
+            <img src="/img/TypcnPlus.svg" alt="Agregar" />
+          </button>
+          <input
+            v-model="newQuestionText"
+            type="text"
+            placeholder="Escribe una nueva pregunta"
+            class="form-control"
+          />
+          <input
+            v-model="newQuestionPoints"
+            type="number"
+            min="1"
+            placeholder="Puntos"
+            class="form-control points-input"
+          />
+
+        </div>
       </div>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+    </section>
+
+
+    <section class="preguntas">
+      <div class="container">
+        <h2>Preguntas</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr class="encab table-primary">
+              <th>No.</th>
+              <th>Pregunta</th>
+              <th>Puntos</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(pregunta) in questions" :key="pregunta.id_question">
+              <td>{{ pregunta.id_question }}</td>
+              <td>
+                <input
+                  v-if="editingQuestion?.id === pregunta.id_question"
+                  v-model="editingQuestion.question"
+                  @keydown="handleKeydown($event, pregunta.id_question)"
+                  class="form-control"
+                />
+                <span v-else>{{ pregunta.question }}</span>
+              </td>
+              <td>
+                <input
+                  v-if="editingQuestion?.id === pregunta.id_question"
+                  v-model="editingQuestion.points"
+                  type="number"
+                  class="form-control"
+                />
+                <span v-else>{{ pregunta.points }}</span>
+              </td>
+              <td>
+                <button @click="handleEditQuestion(pregunta.id_question, pregunta.question, pregunta.points)" title="Editar">
+                  <img src="/img/BxsEdit.svg" alt="Editar" />
+                </button>
+                <button @click="handleDeleteQuestion(pregunta.id_question)" title="Eliminar">
+                  <img src="/img/MaterialSymbolsLightDelete.svg" alt="Eliminar" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="add-question-form">
+          <button class="add-button" @click="handleCreateQuestion" title="Agregar">
+            <img src="/img/TypcnPlus.svg" alt="Agregar" />
+          </button>
+          <input
+            v-model="newQuestionText"
+            type="text"
+            placeholder="Escribe una nueva pregunta"
+            class="form-control"
+          />
+          <input
+            v-model="newQuestionPoints"
+            type="number"
+            min="1"
+            placeholder="Puntos"
+            class="form-control points-input"
+          />
+
+        </div>
+      </div>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </section>
   </div>
+
+  <footer>
+    <div class="button">
+      <a href="#"><i class="bi bi-chevron-double-up"></i></a>
+    </div>
+    <div class="contenedor">
+      <div class="redes">
+        <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
+          <i class="bi bi-envelope"></i>
+        </a>
+
+        <a href="https://www.etecsa.cu/" target="_blank">
+          <img src="/logoheader.png" alt="página oficial de ETECSA" />
+        </a>
+      </div>
+    </div>
+
+    <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+  </footer>
 </template>
+
 
 
 <style scoped>
@@ -61,8 +260,47 @@ onMounted(cargarPreguntas);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 40px;
   margin-top: 80px;
+  margin-bottom: 50px;
+
+}
+
+.preguntas {
+  border: 2px solid rgb(116, 116, 117);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.add-question-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-question-form input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.add-question-form .points-input {
+  width: 80px; /* Ajusta el tamaño del input de puntos */
+}
+
+.add-button {
+  padding: 8px;
+  background-color: #007bff;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.add-button img {
+  width: 30px;
+  height: 30px;
 }
 
 .text {
@@ -269,17 +507,18 @@ input {
   filter: invert(1);
 }
 
-/* Footer  */
+
 footer {
-  padding: 40px 0 20px 0;
+  padding: 0 0 0 0;
   width: 100%;
   background-color: rgb(0, 0, 102);
   display: grid;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  left: 0;
   bottom: 0;
-  z-index: 110;
+  z-index: 10; /* Asegura que esté encima del footer */
+  position: relative; /* Ya configurado correctamente */
 }
 
 footer .contenedor {
@@ -287,8 +526,7 @@ footer .contenedor {
   flex-wrap: wrap;
   width: 100%;
   justify-self: center;
-  margin-bottom: 30px;
-  margin-left: 30px;
+  margin-bottom: 40px;
   justify-content: center;
   align-items: center;
 }
@@ -296,7 +534,7 @@ footer .contenedor {
 footer .button {
   font-size: 30px;
   justify-self: center;
-  margin-top: -85px;
+  margin-top: -20px;
   width: 13%;
   background-color: #39c;
   border-radius: 50%;
@@ -337,4 +575,5 @@ footer .contenedor .redes {
 footer p {
   color: antiquewhite;
 }
+
 </style>

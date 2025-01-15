@@ -4,6 +4,11 @@ export interface Question {
   points: number;
   id_dimension: number;
   question: string;
-  deleted: boolean;
+
 }
 
+export interface createQuestionDto {
+  points: number;
+  id_dimension: number;
+  question: string;
+}

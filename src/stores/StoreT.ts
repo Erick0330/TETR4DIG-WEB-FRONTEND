@@ -3,50 +3,42 @@ import { defineStore } from 'pinia';
 export const useCurrentTetraStore = defineStore('StoreT', {
   state: () => ({
     currentView: 'LandingPage',
-    indicadores:[
+    indicadores: [
       'Consulta de valores',
-      'Resultados de los valores'
+      'Resultados de los valores',
     ],
-    usuarios:[
-      { nombre: 'Juan Perez', rol: 'Admin' },
-      { nombre: 'Maria Lopez', rol: 'Usuario' },
-      { nombre: 'Carlos Ruiz', rol: 'Editor' }
-    ]
+    email: '', // Email del usuario autenticado
+    token: '', // Token JWT del usuario
+    isAuthenticated: false, // Estado de autenticación
   }),
-  actions:{
-    changeToQuestions(){
+  actions: {
+    // Cambio de vistas
+    changeToQuestions() {
       this.currentView = 'Questions';
     },
-    changeToReports(){
+    changeToReports() {
       this.currentView = 'Reports';
     },
-    changeToSettings(){
+    changeToSettings() {
       this.currentView = 'Settings';
     },
-    changeToLogin(){
+    changeToLogin() {
       this.currentView = 'Login';
     },
-    changeToLP(){
+    changeToLP() {
       this.currentView = 'LandingPage';
     },
-    editQuestion(index:number, text:string){
-      this.indicadores[index] = text;
+
+    setToken(token: string) {
+      this.token = token;
+      console.log(token)
+      localStorage.setItem('token', token); // Guardar en el localStorage si quieres persistir el token
     },
-    deleteQuestion(index: number) {
-      if (index >= 0 && index < this.indicadores.length) {
-        this.indicadores.splice(index, 1);
-      }
-    },
-    editUser(index: number, nuevoUsuario: { nombre: string; rol: string }) {
-      if (this.usuarios[index]) {
-        this.usuarios[index] = { ...this.usuarios[index], ...nuevoUsuario };
-      }
-    },
-    deleteUser(index: number) {
-      if (index >= 0 && index < this.indicadores.length) {
-        this.usuarios.splice(index, 1);
-      }
+    getToken() {
+      return this.token || localStorage.getItem('token'); // Obtiene el token desde el estado o localStorage
     },
 
-  }
+
+
+  },
 });
