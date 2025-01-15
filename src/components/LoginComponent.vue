@@ -3,13 +3,24 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { loginUser } from "@/services/authService"; // Importamos el servicio de autenticación
 
-const router = useRouter();
 
+<<<<<<< Updated upstream
+=======
+const router = useRouter();
+const state = useCurrentTetraStore();
+
+>>>>>>> Stashed changes
 const email = ref("");
 const password = ref("");
 const error = ref("");
 const toggleForgotPassword = ref(false);
 const toggleCreateAccount = ref(false);
+
+const goToVerification = () => {
+  state.changeToVerification();
+  router.push("/verification");
+};
+
 
 const handleLogin = async () => {
   try {
@@ -45,7 +56,11 @@ const toggleCreateAccountHandler = () => {
           <div v-if="!toggleForgotPassword && !toggleCreateAccount" key="login-fields" id="form-body">
             <div id="welcome-lines">
               <div id="welcome-line-1">ETECSA</div>
+<<<<<<< Updated upstream
               <div id="welcome-line-2">Bienvenido de nuevo</div>
+=======
+              <div id="welcome-line-2">Bienvenido</div>
+>>>>>>> Stashed changes
             </div>
             <div id="input-area">
               <div class="form-inp">
@@ -79,7 +94,7 @@ const toggleCreateAccountHandler = () => {
               </div>
             </div>
             <div id="submit-button-cvr">
-              <button id="submit-button" type="submit">Enviar</button>
+              <button id="submit-button" @click="goToVerification" type="submit">Enviar</button>
             </div>
             <div id="forgot-pass">
               <button type="button" @click="toggleForgotPasswordHandler" class="transparent-button">Back to Login</button>

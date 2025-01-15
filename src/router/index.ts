@@ -5,6 +5,7 @@ import ReportsComponent from '@/components/ReportsComponent.vue'
 import LoginComponent from '@/components/LoginComponent.vue'
 import LandingPage from '@/views/LandingPage.vue'
 import SettingsComponent from '@/components/SettingsComponent.vue'
+import OTPComponent from '@/components/OTPComponent.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,10 @@ const router = createRouter({
     {
       path:'/login',
       component: LoginComponent
+    },
+    {
+      path:'/verification',
+      component: OTPComponent
     },
     {
       path:'/settings',

@@ -25,6 +25,9 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     changeToLogin() {
       this.currentView = 'Login';
     },
+    changeToVerification(){
+      this.currentView = 'Verification'
+    },
     changeToLP() {
       this.currentView = 'LandingPage';
     },
