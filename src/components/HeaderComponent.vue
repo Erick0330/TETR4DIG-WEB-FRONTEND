@@ -8,6 +8,7 @@ const router = useRouter();
 
 // Controla el estado del sidebar (abierto/cerrado)
 const isSidebarActive = ref(false);
+
 const state = useCurrentTetraStore();
 //const currentView = computed(() => state.currentView);
 

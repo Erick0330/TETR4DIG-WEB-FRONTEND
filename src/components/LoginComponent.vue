@@ -155,6 +155,7 @@ const toggleCreateAccountHandler = () => {
   outline: 1px solid #298dc7;
   border-radius: 10px;
   position: relative;
+  overflow: hidden; /* Evita que los formularios se vean fuera del contenedor durante la transición */
 }
 
 #form-body {
@@ -286,4 +287,30 @@ const toggleCreateAccountHandler = () => {
 .transparent-button:hover {
   color: #ffffff;
 }
+
+/* Transiciones personalizadas para el efecto slide-left */
+.slide-left-enter-active, .slide-left-leave-active {
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+.slide-left-enter {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-left-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.slide-left-leave {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.slide-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
 </style>

@@ -6,8 +6,10 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 // Controla el estado del sidebar (abierto/cerrado)
-// const isSidebarActive = ref(false);
 const state = useCurrentTetraStore();
+
+
+
 const currentView = computed(() => state.currentView);
 const goToReports = () => {
   state.changeToReports();
@@ -21,7 +23,6 @@ const goToSettings = () => {
   state.changeToSettings();
   router.push("/settings")
 }
-// Función para alternar la clase "active" en el sidebar
 
 </script>
 

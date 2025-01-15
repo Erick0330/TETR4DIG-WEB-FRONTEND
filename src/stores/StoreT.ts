@@ -10,6 +10,7 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     email: '', // Email del usuario autenticado
     token: '', // Token JWT del usuario
     isAuthenticated: false, // Estado de autenticación
+    isSideBarActive: false,
   }),
   actions: {
     // Cambio de vistas
@@ -38,7 +39,9 @@ export const useCurrentTetraStore = defineStore('StoreT', {
       return this.token || localStorage.getItem('token'); // Obtiene el token desde el estado o localStorage
     },
 
-
+    toggleSidebar() {
+      this.isSideBarActive = !this.isSideBarActive;
+    },
 
   },
 });
