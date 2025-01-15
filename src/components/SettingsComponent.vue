@@ -1,196 +1,235 @@
 <script setup lang="ts">
-import { useCurrentTetraStore } from "@/stores/StoreT";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { getQuestions, createQuestion, updateQuestion, deleteQuestion } from "@/services/questionsService";
+import type { Question } from "@/types/question";
+import SideBarComponent from "./SideBarComponent.vue";
+import HeaderComponent from "./HeaderComponent.vue";
 
-const state = useCurrentTetraStore();
 
-// Preguntas
-const indicadores = ref(
-  state.indicadores.map((pregunta) => ({
-    texto: pregunta,
-    editando: false,
-    nuevoTexto: pregunta,
-  }))
-);
+const questions = ref<Question[]>([]);
+const newQuestionText = ref<string>(""); // Texto de la nueva pregunta
+const newQuestionPoints = ref<number>(0); // Cantidad de puntos
+const errorMessage = ref<string | null>(null);
+const editingQuestion = ref<{ id: number; question: string; points: number } | null>(null); // Control de edición
 
-const editarPregunta = (index: number) => {
-  const item = indicadores.value[index];
-  if (item.nuevoTexto.trim()) {
-    item.texto = item.nuevoTexto;
-    item.editando = false;
-    state.editQuestion(index, item.texto); // Actualiza el store con el nuevo texto
+onMounted(async () => {
+  try {
+    questions.value = await getQuestions();
+    questions.value.sort((a, b) => a.id_question - b.id_question); // Ordenar preguntas por ID de menor a mayor
+  } catch (error) {
+    console.error("Error al cargar las preguntas:", error);
+    errorMessage.value = "Error al cargar las preguntas.";
+  }
+});
+
+// Función para crear una nueva pregunta
+const handleCreateQuestion = async () => {
+  if (!newQuestionText.value.trim()) {
+    alert("El texto de la pregunta no puede estar vacío.");
+    return;
+  }
+
+  try {
+    const newQuestion = await createQuestion({
+      points: newQuestionPoints.value, // Valor de los puntos
+      id_dimension: 1, // Ajusta este valor según tus necesidades
+      question: newQuestionText.value,
+    });
+
+    questions.value.push(newQuestion); // Actualiza la lista local de preguntas
+    newQuestionText.value = ""; // Limpia el campo de texto
+    newQuestionPoints.value = 10; // Resetea los puntos a su valor predeterminado
+  } catch (error) {
+    console.error("Error al crear la pregunta:", error);
+    errorMessage.value = "Error al crear la pregunta.";
   }
 };
 
-const cancelarEdicion = (index: number) => {
-  const item = indicadores.value[index];
-  item.nuevoTexto = item.texto;
-  item.editando = false;
-};
-
-const eliminarPregunta = (index: number) => {
-  indicadores.value.splice(index, 1);
-  state.deleteQuestion(index); // Actualiza el store eliminando la pregunta
-};
-
-const agregarPregunta = () => {
-  const nuevaPregunta = {
-    texto: "Nueva pregunta",
-    editando: true,
-    nuevoTexto: "Nueva pregunta",
-  };
-  indicadores.value.push(nuevaPregunta);
-};
-
-// Usuarios
-const usuarios = ref(
-  state.usuarios.map((usuario) => ({
-    ...usuario,
-    editando: false,
-    nuevoNombre: usuario.nombre,
-    nuevoRol: usuario.rol,
-  }))
-);
-
-const editarUsuario = (index: number) => {
-  const usuario = usuarios.value[index];
-  if (usuario.nuevoNombre.trim() && usuario.nuevoRol.trim()) {
-    usuario.nombre = usuario.nuevoNombre;
-    usuario.rol = usuario.nuevoRol;
-    usuario.editando = false;
-    state.editUser(index, { nombre: usuario.nombre, rol: usuario.rol }); // Actualiza el store
+// Función para editar una pregunta
+const handleEditQuestion = (id: number, question: string, points: number) => {
+  // Al pulsar el botón de editar, el campo se vuelve editable
+  if (editingQuestion.value?.id === id) {
+    // Si ya se está editando esta pregunta, guarda los cambios
+    updateQuestion(id, {
+      question: editingQuestion.value.question,
+      points: editingQuestion.value.points,
+      id_dimension: 1,
+    })
+      .then((updatedQuestion) => {
+        const index = questions.value.findIndex(q => q.id_question === id);
+        if (index !== -1) {
+          questions.value[index] = updatedQuestion; // Actualiza la lista con la pregunta modificada
+        }
+        editingQuestion.value = null; // Termina la edición
+      })
+      .catch((error) => {
+        console.error("Error al editar la pregunta:", error);
+        errorMessage.value = "Error al editar la pregunta.";
+      });
+  } else {
+    // Si no se está editando esta pregunta, la selecciona para editar
+    editingQuestion.value = { id, question, points };
   }
 };
 
-const cancelarEdicionUsuario = (index: number) => {
-  const usuario = usuarios.value[index];
-  usuario.nuevoNombre = usuario.nombre;
-  usuario.nuevoRol = usuario.rol;
-  usuario.editando = false;
+// Función para eliminar una pregunta
+const handleDeleteQuestion = async (id: number) => {
+  try {
+    await deleteQuestion(id); // Elimina la pregunta desde el servidor
+    questions.value = questions.value.filter(q => q.id_question !== id); // Elimina la pregunta de la lista local
+  } catch (error) {
+    console.error("Error al eliminar la pregunta:", error);
+    errorMessage.value = "Error al eliminar la pregunta.";
+  }
 };
 
-const eliminarUsuario = (index: number) => {
-  usuarios.value.splice(index, 1);
-  state.deleteUser(index); // Actualiza el store eliminando el usuario
-};
-
-const agregarUsuario = () => {
-  const nuevoUsuario = {
-    nombre: "Nuevo Usuario",
-    rol: "Sin rol",
-    editando: true,
-    nuevoNombre: "Nuevo Usuario",
-    nuevoRol: "Sin rol",
-  };
-  usuarios.value.push(nuevoUsuario);
+// Función para manejar el evento de 'Enter' en los inputs de edición
+const handleKeydown = (event: KeyboardEvent, id: number) => {
+  if (event.key === "Enter") {
+    handleEditQuestion(id, editingQuestion.value!.question, editingQuestion.value!.points);
+  }
 };
 </script>
 
+
 <template>
+  <HeaderComponent/>
+  <SideBarComponent/>
+
   <div class="main">
-    <section class="indicadores">
+    <section class="preguntas">
       <div class="container">
-        <h2>Indicadores</h2>
+        <h2>Preguntas</h2>
         <table class="table table-bordered">
           <thead>
             <tr class="encab table-primary">
               <th>No.</th>
-              <th>Nombre</th>
+              <th>Pregunta</th>
+              <th>Puntos</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(pregunta, index) in indicadores" :key="index">
-              <td>{{ index + 1 }}</td>
+            <tr v-for="(pregunta) in questions" :key="pregunta.id_question">
+              <td>{{ pregunta.id_question }}</td>
               <td>
                 <input
-                  v-if="pregunta.editando"
-                  v-model="pregunta.nuevoTexto"
-                  @keyup.enter="editarPregunta(index)"
-                  @keyup.esc="cancelarEdicion(index)"
+                  v-if="editingQuestion?.id === pregunta.id_question"
+                  v-model="editingQuestion.question"
+                  @keydown="handleKeydown($event, pregunta.id_question)"
+                  class="form-control"
                 />
-                <span v-else>{{ pregunta.texto }}</span>
+                <span v-else>{{ pregunta.question }}</span>
               </td>
               <td>
-                <button @click="pregunta.editando = true" title="Editar">
+                <input
+                  v-if="editingQuestion?.id === pregunta.id_question"
+                  v-model="editingQuestion.points"
+                  type="number"
+                  class="form-control"
+                />
+                <span v-else>{{ pregunta.points }}</span>
+              </td>
+              <td>
+                <button @click="handleEditQuestion(pregunta.id_question, pregunta.question, pregunta.points)" title="Editar">
                   <img src="/img/BxsEdit.svg" alt="Editar" />
                 </button>
-                <button @click="eliminarPregunta(index)" title="Eliminar">
-                  <img
-                    src="/img/MaterialSymbolsLightDelete.svg"
-                    alt="Eliminar"
-                  />
+                <button @click="handleDeleteQuestion(pregunta.id_question)" title="Eliminar">
+                  <img src="/img/MaterialSymbolsLightDelete.svg" alt="Eliminar" />
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
-        <button class="add-button" @click="agregarPregunta" title="Agregar">
-          <img src="/img/TypcnPlus.svg" alt="Agregar" />
-        </button>
+        <div class="add-question-form">
+          <button class="add-button" @click="handleCreateQuestion" title="Agregar">
+            <img src="/img/TypcnPlus.svg" alt="Agregar" />
+          </button>
+          <input
+            v-model="newQuestionText"
+            type="text"
+            placeholder="Escribe una nueva pregunta"
+            class="form-control"
+          />
+          <input
+            v-model="newQuestionPoints"
+            type="number"
+            min="1"
+            placeholder="Puntos"
+            class="form-control points-input"
+          />
+
+        </div>
       </div>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </section>
 
-    <div class="text">
-      <p>
-        Cuando esté editando una fila de la tabla solo se guardarán los cambios
-        al pulsar el botón 'enter'. Para cancelar una edición de campo oprima el
-        botón 'Esc'.
-      </p>
-    </div>
 
-    <section class="usuarios">
+    <section class="preguntas">
       <div class="container">
-        <h2>Usuarios</h2>
-        <p>Gestión de usuarios registrados</p>
+        <h2>Preguntas</h2>
         <table class="table table-bordered">
           <thead>
             <tr class="encab table-primary">
               <th>No.</th>
-              <th>Usuario</th>
-              <th>Rol</th>
+              <th>Pregunta</th>
+              <th>Puntos</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(usuario, index) in usuarios" :key="index">
-              <td>{{ index + 1 }}</td>
+            <tr v-for="(pregunta) in questions" :key="pregunta.id_question">
+              <td>{{ pregunta.id_question }}</td>
               <td>
                 <input
-                  v-if="usuario.editando"
-                  v-model="usuario.nuevoNombre"
-                  @keyup.enter="editarUsuario(index)"
-                  @keyup.esc="cancelarEdicionUsuario(index)"
+                  v-if="editingQuestion?.id === pregunta.id_question"
+                  v-model="editingQuestion.question"
+                  @keydown="handleKeydown($event, pregunta.id_question)"
+                  class="form-control"
                 />
-                <span v-else>{{ usuario.nombre }}</span>
+                <span v-else>{{ pregunta.question }}</span>
               </td>
               <td>
                 <input
-                  v-if="usuario.editando"
-                  v-model="usuario.nuevoRol"
-                  @keyup.enter="editarUsuario(index)"
-                  @keyup.esc="cancelarEdicionUsuario(index)"
+                  v-if="editingQuestion?.id === pregunta.id_question"
+                  v-model="editingQuestion.points"
+                  type="number"
+                  class="form-control"
                 />
-                <span v-else>{{ usuario.rol }}</span>
+                <span v-else>{{ pregunta.points }}</span>
               </td>
               <td>
-                <button @click="usuario.editando = true" title="Editar">
+                <button @click="handleEditQuestion(pregunta.id_question, pregunta.question, pregunta.points)" title="Editar">
                   <img src="/img/BxsEdit.svg" alt="Editar" />
                 </button>
-                <button @click="eliminarUsuario(index)" title="Eliminar">
-                  <img
-                    src="/img/MaterialSymbolsLightDelete.svg"
-                    alt="Eliminar"
-                  />
+                <button @click="handleDeleteQuestion(pregunta.id_question)" title="Eliminar">
+                  <img src="/img/MaterialSymbolsLightDelete.svg" alt="Eliminar" />
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
-        <button class="add-button" @click="agregarUsuario" title="Agregar">
-          <img src="/img/TypcnPlus.svg" alt="Agregar" />
-        </button>
+        <div class="add-question-form">
+          <button class="add-button" @click="handleCreateQuestion" title="Agregar">
+            <img src="/img/TypcnPlus.svg" alt="Agregar" />
+          </button>
+          <input
+            v-model="newQuestionText"
+            type="text"
+            placeholder="Escribe una nueva pregunta"
+            class="form-control"
+          />
+          <input
+            v-model="newQuestionPoints"
+            type="number"
+            min="1"
+            placeholder="Puntos"
+            class="form-control points-input"
+          />
+
+        </div>
       </div>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </section>
   </div>
 
@@ -214,24 +253,68 @@ const agregarUsuario = () => {
   </footer>
 </template>
 
+
+
 <style scoped>
 .main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 40px;
+  margin-top: 80px;
+  margin-bottom: 50px;
+
 }
 
-.text{
+.preguntas {
+  border: 2px solid rgb(116, 116, 117);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.add-question-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-question-form input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.add-question-form .points-input {
+  width: 80px; /* Ajusta el tamaño del input de puntos */
+}
+
+.add-button {
+  padding: 8px;
+  background-color: #007bff;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.add-button img {
+  width: 30px;
+  height: 30px;
+}
+
+.text {
   display: flex;
   align-items: center;
   width: 40%;
   margin-top: 40px;
 }
-.text p{
+
+.text p {
   color: black;
   font-size: 20px;
 }
+
 .indicadores,
 .usuarios {
   margin: 20px 0;
@@ -253,6 +336,7 @@ const agregarUsuario = () => {
 }
 
 @media (max-width: 1430px) {
+
   .indicadores,
   .usuarios {
     width: 60%;
@@ -262,56 +346,70 @@ const agregarUsuario = () => {
 @media (max-width: 768px) {
   .table-wrapper {
     width: 100%;
-    overflow-x: auto; /* Asegura que la tabla sea desplazable horizontalmente */
-    -webkit-overflow-scrolling: touch; /* Mejora la experiencia en dispositivos táctiles */
+    overflow-x: auto;
+    /* Asegura que la tabla sea desplazable horizontalmente */
+    -webkit-overflow-scrolling: touch;
+    /* Mejora la experiencia en dispositivos táctiles */
   }
 
   .table {
     width: 100%;
-    table-layout: fixed; /* Hace que las celdas de la tabla se ajusten automáticamente */
+    table-layout: fixed;
+    /* Hace que las celdas de la tabla se ajusten automáticamente */
   }
 
   .indicadores,
   .usuarios {
     width: 90%;
     padding: 10px;
-    margin-top: 100px; /* Reduce el margen superior en pantallas pequeñas */
+    margin-top: 100px;
+    /* Reduce el margen superior en pantallas pequeñas */
     margin-left: 5px;
   }
 
   h2 {
-    font-size: 24px; /* Ajusta el tamaño de fuente para encabezados */
+    font-size: 24px;
+    /* Ajusta el tamaño de fuente para encabezados */
   }
 
   .table th,
   .table td {
-    padding: 8px; /* Reduce el padding para tablas en pantallas pequeñas */
+    padding: 8px;
+    /* Reduce el padding para tablas en pantallas pequeñas */
   }
 
 
   .container {
-    width: 100%; /* Asegura que el contenedor ocupe el 100% del ancho */
-    margin: 10px; /* Añade un pequeño margen alrededor del contenedor */
+    width: 100%;
+    /* Asegura que el contenedor ocupe el 100% del ancho */
+    margin: 10px;
+    /* Añade un pequeño margen alrededor del contenedor */
   }
 
   h2 {
-    font-size: 32px; /* Reduce el tamaño de los encabezados */
-    margin-bottom: 15px; /* Ajusta el margen inferior */
+    font-size: 32px;
+    /* Reduce el tamaño de los encabezados */
+    margin-bottom: 15px;
+    /* Ajusta el margen inferior */
   }
 
   button img {
-    width: 25px; /* Reduce el tamaño de las imágenes en los botones */
+    width: 25px;
+    /* Reduce el tamaño de las imágenes en los botones */
     height: 25px;
   }
 
   input {
     width: 100%;
-    padding: 8px; /* Aumenta un poco el padding en inputs */
-    font-size: 16px; /* Ajusta el tamaño de la fuente en inputs */
+    padding: 8px;
+    /* Aumenta un poco el padding en inputs */
+    font-size: 16px;
+    /* Ajusta el tamaño de la fuente en inputs */
   }
 
   .add-button {
-    padding: 8px; /* Ajusta el padding del botón */
+    padding: 8px;
+    /* Ajusta el padding del botón */
     background-color: #007bff;
     border-radius: 50%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -319,7 +417,8 @@ const agregarUsuario = () => {
   }
 
   .add-button img {
-    width: 30px; /* Ajusta el tamaño de la imagen dentro del botón */
+    width: 30px;
+    /* Ajusta el tamaño de la imagen dentro del botón */
     height: 30px;
   }
 }
@@ -344,14 +443,16 @@ p {
 
 .table-wrapper {
   width: 100%;
-  overflow-x: auto; /* Permite que la tabla sea desplazable horizontalmente */
+  overflow-x: auto;
+  /* Permite que la tabla sea desplazable horizontalmente */
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  table-layout: fixed; /* Asegura que la tabla no se desborde y se ajuste */
+  table-layout: fixed;
+  /* Asegura que la tabla no se desborde y se ajuste */
 }
 
 .table th,
@@ -406,17 +507,18 @@ input {
   filter: invert(1);
 }
 
-/* Footer  */
+
 footer {
-  padding: 40px 0 20px 0;
+  padding: 0 0 0 0;
   width: 100%;
   background-color: rgb(0, 0, 102);
   display: grid;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  left: 0;
   bottom: 0;
-  z-index: 110;
+  z-index: 10; /* Asegura que esté encima del footer */
+  position: relative; /* Ya configurado correctamente */
 }
 
 footer .contenedor {
@@ -424,8 +526,7 @@ footer .contenedor {
   flex-wrap: wrap;
   width: 100%;
   justify-self: center;
-  margin-bottom: 30px;
-  margin-left: 30px;
+  margin-bottom: 40px;
   justify-content: center;
   align-items: center;
 }
@@ -433,7 +534,7 @@ footer .contenedor {
 footer .button {
   font-size: 30px;
   justify-self: center;
-  margin-top: -85px;
+  margin-top: -20px;
   width: 13%;
   background-color: #39c;
   border-radius: 50%;
@@ -474,4 +575,5 @@ footer .contenedor .redes {
 footer p {
   color: antiquewhite;
 }
+
 </style>

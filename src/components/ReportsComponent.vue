@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import * as echarts from 'echarts';
+import HeaderComponent from './HeaderComponent.vue';
+import SideBarComponent from './SideBarComponent.vue';
 
 // Referencias para los elementos HTML de los gráficos
 const chart1 = ref<HTMLDivElement | null>(null);
@@ -14,6 +16,7 @@ const chartInstances: echarts.ECharts[] = [];
 let chart1Instance: echarts.ECharts | null = null;
 let chart2Instance: echarts.ECharts | null = null;
 let chart3Instance: echarts.ECharts | null = null;
+
 
 // Configuración para el gráfico 1 (Gráfico de Donut de MDA)
 const getOptionChart1 = (): echarts.EChartsOption => ({
@@ -228,6 +231,11 @@ onBeforeUnmount(() => {
 
 
 <template>
+
+<HeaderComponent/>
+<SideBarComponent/>
+
+
   <section class="contentPane">
     <div class="chart-div">
       <h2>Resultados: Madurez Digital por ámbitos (MDA)</h2>
@@ -281,7 +289,7 @@ onBeforeUnmount(() => {
   margin: 100px 50px;
   margin-bottom: 300px;
   padding: 5vh 1vw 0 250px;
-  position: relative;
+
   width: 95%;
   height: 50%;
 
@@ -389,17 +397,18 @@ onBeforeUnmount(() => {
 }
 
 /* Footer  */
-footer {
 
-  padding: 40px 0 20px 0;
+footer {
+  padding: 0 0 0 0;
   width: 100%;
   background-color: rgb(0, 0, 102);
   display: grid;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  left: 0;
   bottom: 0;
-  z-index: 110;
+  z-index: 10; /* Asegura que esté encima del footer */
+  position: relative; /* Ya configurado correctamente */
 }
 
 footer .contenedor {
@@ -407,8 +416,7 @@ footer .contenedor {
   flex-wrap: wrap;
   width: 100%;
   justify-self: center;
-  margin-bottom: 30px;
-  margin-left: 30px;
+  margin-bottom: 40px;
   justify-content: center;
   align-items: center;
 }
@@ -416,7 +424,7 @@ footer .contenedor {
 footer .button {
   font-size: 30px;
   justify-self: center;
-  margin-top: -85px;
+  margin-top: -20px;
   width: 13%;
   background-color: #39c;
   border-radius: 50%;
@@ -426,7 +434,6 @@ footer .button {
 
 footer .button i {
   color: antiquewhite;
-  ;
 }
 
 footer .contenedor .redes {
@@ -443,7 +450,6 @@ footer .contenedor .redes img {
 footer .contenedor .redes i {
   color: antiquewhite;
   font-size: 30px;
-
 }
 
 footer .contenedor .redes {
@@ -454,11 +460,9 @@ footer .contenedor .redes {
   .mail {
     margin-left: 20%;
   }
-
 }
 
 footer p {
-
   color: antiquewhite;
 }
 </style>

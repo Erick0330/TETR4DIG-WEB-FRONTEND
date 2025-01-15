@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import HeaderComponent from './HeaderComponent.vue';
 import SideBarComponent from './SideBarComponent.vue';
+
 </script>
 
 <template>
 
 
-
+  <HeaderComponent />
+  <SideBarComponent />
   <!--Tabla de Consultoria-->
 <HeaderComponent/>
 <SideBarComponent/>
 
-  <div class="container mt-5">
+  <div class="container ">
     <div class="texto">
       <h2 class="consultoria">Tabla de Consultoria</h2>
     </div>
@@ -152,31 +154,35 @@ import SideBarComponent from './SideBarComponent.vue';
     </div>
   </div>
 
+
   <footer>
-      <div class="button">
-        <a href="#"><i class="bi bi-chevron-double-up"></i></a>
-      </div>
-      <div class="contenedor">
-        <div class="redes">
-          <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
-            <i class="bi bi-envelope"></i>
-          </a>
+    <div class="button">
+      <a href="#"><i class="bi bi-chevron-double-up"></i></a>
+    </div>
+    <div class="contenedor">
+      <div class="redes">
+        <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
+          <i class="bi bi-envelope"></i>
+        </a>
 
-          <a href="https://www.etecsa.cu/" target="_blank">
-            <img src="/logoheader.png" alt="página oficial de ETECSA" />
-          </a>
-        </div>
+        <a href="https://www.etecsa.cu/" target="_blank">
+          <img src="/logoheader.png" alt="página oficial de ETECSA" />
+        </a>
       </div>
+    </div>
 
-      <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
-    </footer>
+    <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+  </footer>
+
 </template>
 
 <style scoped>
 /*Tabla de consultoria*/
 
-.container{
+.container {
   margin-bottom: 100px;
+  width: 100%;
+  height: 100%;
 }
 
 .consultoria {
@@ -227,9 +233,10 @@ form-select {
 
 /* Estilos para pantallas pequeñas de la Tabla de Consultoria*/
 @media screen and (max-width: 650px) {
-  .container{
+  .container {
     margin-bottom: 190px;
   }
+
   .table {
     margin: 60px auto;
     width: 10%;
@@ -245,77 +252,72 @@ form-select {
 
 }
 
-/* Footer  */
-footer {
 
-padding: 40px 0 20px 0;
-width: 100%;
-background-color: rgb(0, 0, 102);
-display: grid;
-justify-content: center;
-align-items: center;
-position: absolute;
-bottom: 0;
-z-index: 110;
+footer {
+  padding: 0 0 0 0;
+  width: 100%;
+  background-color: rgb(0, 0, 102);
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  bottom: 0;
+  z-index: 10; /* Asegura que esté encima del footer */
+  position: relative; /* Ya configurado correctamente */
 }
 
 footer .contenedor {
-display: flex;
-flex-wrap: wrap;
-width: 100%;
-justify-self: center;
-margin-bottom: 30px;
-margin-left: 30px;
-justify-content: center;
-align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-self: center;
+  margin-bottom: 40px;
+  justify-content: center;
+  align-items: center;
 }
 
 footer .button {
-font-size: 30px;
-justify-self: center;
-margin-top: -85px;
-width: 13%;
-background-color: #39c;
-border-radius: 50%;
-display: flex;
-justify-content: center;
+  font-size: 30px;
+  justify-self: center;
+  margin-top: -20px;
+  width: 13%;
+  background-color: #39c;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
 }
 
 footer .button i {
-color: antiquewhite;
-;
+  color: antiquewhite;
 }
 
 footer .contenedor .redes {
-width: 100%;
-display: flex;
-justify-content: center;
-align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 footer .contenedor .redes img {
-width: 100%;
+  width: 100%;
 }
 
 footer .contenedor .redes i {
-color: antiquewhite;
-font-size: 30px;
-
+  color: antiquewhite;
+  font-size: 30px;
 }
 
 footer .contenedor .redes {
-a {
+  a {
     margin-left: 7%;
-}
+  }
 
-.mail {
+  .mail {
     margin-left: 20%;
-}
-
+  }
 }
 
 footer p {
-
-color: antiquewhite;
+  color: antiquewhite;
 }
 </style>

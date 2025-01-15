@@ -3,7 +3,7 @@ import ArrowComponent from "@/components/ArrowComponent.vue";
 import router from "@/router";
 const goToLogin = () => {
   router.push("/login");
-}
+};
 </script>
 
 <template>
@@ -19,7 +19,9 @@ const goToLogin = () => {
       <a href="#about" class="know">
         <p>CONÓCENOS</p>
       </a>
-      <ArrowComponent />
+      <a href="#start">
+        <ArrowComponent />
+      </a>
     </div>
   </section>
 
@@ -115,8 +117,12 @@ const goToLogin = () => {
       </div>
 
       <div class="form">
-        <input type="email" placeholder="email" />
-        <input type="submit" />
+        <input
+          type="email"
+          placeholder="Ingresa tu email"
+          class="email-input"
+        />
+        <button type="submit" class="email-submit">Enviar</button>
       </div>
     </div>
   </section>
@@ -277,13 +283,13 @@ const goToLogin = () => {
       </div>
     </div>
 
-    <div @click="goToLogin" class="start-container">
-    <a class="start">
-      <p>Empezar</p>
-    </a>
-  </div>
+    <div id="start" @click="goToLogin" class="start-container">
+      <a class="start">
+        <p>Empezar</p>
+      </a>
+    </div>
 
-  <footer>
+    <footer>
       <div class="button">
         <a href="#"><i class="bi bi-chevron-double-up"></i></a>
       </div>
@@ -302,18 +308,14 @@ const goToLogin = () => {
       <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
     </footer>
   </section>
-
-
-
-
 </template>
 
 <style scoped>
-.start-container{
+.start-container {
   display: flex;
   justify-content: center;
 }
-.start{
+.start {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -339,7 +341,7 @@ const goToLogin = () => {
   font-weight: bold;
   color: antiquewhite;
   transition: color 0.3s, font-size 0.3s;
-  text-shadow:0 0 5px #b1b2b4;
+  text-shadow: 0 0 5px #b1b2b4;
 }
 
 .start:hover p {
@@ -372,13 +374,6 @@ const goToLogin = () => {
   width: 100%;
   height: 100vh;
   text-align: center; /* Asegura centrado del texto */
-}
-
-.ex {
-  margin-top: 100vh;
-  height: 400px;
-  width: 100%;
-  background-color: red;
 }
 
 .hello {
@@ -432,7 +427,7 @@ h2 {
   font-weight: bold;
   color: antiquewhite;
   transition: color 0.3s, font-size 0.3s;
-  text-shadow:0 0 5px #b1b2b4;
+  text-shadow: 0 0 5px #b1b2b4;
 }
 
 .know:hover p {
@@ -561,16 +556,41 @@ h2 {
   margin-top: 30px;
   width: 90%;
   padding: 0;
+  gap: 10px;
 }
 
-.form input {
-  margin-left: 5px;
-  height: 30px;
+.email-input {
+  flex: 1;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #1f7ace;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.email-input:focus {
+  border-color: #357fdb;
+  box-shadow: 0 0 10px rgba(53, 127, 219, 0.5);
+}
+
+.email-submit {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #1f7ace;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.email-submit:hover {
+  background-color: #357fdb;
+  transform: scale(1.05);
 }
 /* Estilos para pantallas grandes de la seccion about*/
-
-
-
 
 @media (max-width: 525px) {
   .carousel {
@@ -587,17 +607,13 @@ h2 {
   }
 }
 
-
-
 @media (min-width: 990px) {
-
   .carousel {
     width: 70%;
   }
 
   .form {
     width: 50%;
-
   }
 
   .form input {
@@ -617,16 +633,13 @@ h2 {
   }
 }
 
-
-
-
 /* Seccion Como usar----------------------------------------------------------------------------------------------------------------------*/
 .como-usar {
   left: 0;
   padding: 100px 0 20px 0;
   width: 100%;
   position: absolute;
-  background-color: #f5f8fd; /* Fondo gris claro */
+  background-color: #ebf0f7; /* Fondo gris claro */
   z-index: 1;
 }
 
@@ -651,7 +664,6 @@ h2 {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
 }
 .como-usar h3 {
   margin-top: 30px;
@@ -661,13 +673,13 @@ h2 {
   text-align: justify;
 }
 
-.como-usar  p {
+.como-usar p {
   font-size: 20px;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
-.niveles-implementacion p{
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;;
+.niveles-implementacion p {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 .niveles-implementacion ul li:hover {
@@ -731,11 +743,10 @@ h2 {
   text-align: justify;
 }
 
-.resultados  p {
+.resultados p {
   font-size: 20px;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
-
 
 .table-primary {
   --bs-table-bg: #fff !important;
@@ -769,7 +780,7 @@ h2 {
   border: 1px solid black;
 }
 
-.table{
+.table {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
@@ -821,75 +832,70 @@ h2 {
 }
 
 footer {
+  padding: 0 0 0 0;
+  width: 100%;
+  background-color: rgb(0, 0, 102);
+  display: grid;
+  justify-content: center;
+  align-items: center;
 
-padding: 0 0 0 0;
-width: 100%;
-background-color: rgb(0, 0, 102);
-display: grid;
-justify-content: center;
-align-items: center;
-
-left: 0;
-bottom: 0;
-z-index: 150;
+  left: 0;
+  bottom: 0;
+  z-index: 150;
 }
 
 footer .contenedor {
-display: flex;
-flex-wrap: wrap;
-width: 100%;
-justify-self: center;
-margin-bottom: 40px;
-justify-content: center;
-align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-self: center;
+  margin-bottom: 40px;
+  justify-content: center;
+  align-items: center;
 }
 
 footer .button {
-font-size: 30px;
-justify-self: center;
-margin-top: -20px;
-width: 13%;
-background-color: #39c;
-border-radius: 50%;
-display: flex;
-justify-content: center;
+  font-size: 30px;
+  justify-self: center;
+  margin-top: -20px;
+  width: 13%;
+  background-color: #39c;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
 }
 
 footer .button i {
-color: antiquewhite;
-;
+  color: antiquewhite;
 }
 
 footer .contenedor .redes {
-width: 100%;
-display: flex;
-justify-content: center;
-align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 footer .contenedor .redes img {
-width: 100%;
+  width: 100%;
 }
 
 footer .contenedor .redes i {
-color: antiquewhite;
-font-size: 30px;
-
+  color: antiquewhite;
+  font-size: 30px;
 }
 
 footer .contenedor .redes {
-a {
+  a {
     margin-left: 7%;
-}
+  }
 
-.mail {
+  .mail {
     margin-left: 20%;
-}
-
+  }
 }
 
 footer p {
-
-color: antiquewhite;
+  color: antiquewhite;
 }
 </style>

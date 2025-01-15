@@ -83,7 +83,6 @@ const toggleSidebar = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
 }
 
 /* Header  */

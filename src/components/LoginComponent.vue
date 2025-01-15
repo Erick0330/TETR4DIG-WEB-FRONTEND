@@ -1,81 +1,75 @@
-<script lang="ts">
-import { ref, defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { loginUser } from "@/services/authService"; // Importamos el servicio de autenticación
 
-export default defineComponent({
-  setup() {
-    const router = useRouter();
-    const toggleForgotPassword = ref(false);
+const router = useRouter();
 
-    const goToQuestions = (event: Event) => {
-      event.preventDefault();
-      router.push("/questions");
-    };
+const email = ref("");
+const password = ref("");
+const error = ref("");
 
-    const toggleForgotPasswordHandler = () => {
-      toggleForgotPassword.value = !toggleForgotPassword.value;
-    };
-
-    return {
-      toggleForgotPassword,
-      goToQuestions,
-      toggleForgotPasswordHandler
-    };
+const handleLogin = async () => {
+  try {
+    await loginUser(email.value, password.value); // Llamada al servicio de login
+    router.push("/questions"); // Redirige a la página de preguntas si el login es exitoso
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) {
+    error.value = "Credenciales incorrectas. Por favor, inténtalo nuevamente.";
   }
-});
+};
 </script>
 
+
 <template>
-  <!-- Cosas del Login -->
   <div id="difuminado">
     <div id="form-ui">
-      <form @submit="goToQuestions" id="form">
-        <transition name="slide-left" mode="out-in">
-          <div v-if="!toggleForgotPassword" key="login-fields" id="form-body">
-            <div id="welcome-lines">
-              <div id="welcome-line-1">ETECSA</div>
-              <div id="welcome-line-2">Welcome Back, Loyd</div>
+      <form @submit.prevent="handleLogin" id="form">
+        <div id="form-body">
+          <div id="welcome-lines">
+            <div id="welcome-line-1">ETECSA</div>
+            <div id="welcome-line-2">Bienvenido de nuevo</div>
+          </div>
+          <div id="input-area">
+            <div class="form-inp">
+              <input
+                v-model="email"
+                placeholder="Correo electrónico"
+                required
+                type="email"
+              />
             </div>
-            <div id="input-area">
-              <div class="form-inp">
-                <input placeholder="Account" required type="text" />
-              </div>
-              <div class="form-inp">
-                <input placeholder="Password" required type="password" />
-              </div>
-            </div>
-            <div id="submit-button-cvr">
-              <button id="submit-button" type="submit">Login</button>
-            </div>
-            <div id="forgot-pass">
-              <button type="button" @click="toggleForgotPasswordHandler" class="transparent-button">Forgot Password?</button>
+            <div class="form-inp">
+              <input
+                v-model="password"
+                placeholder="Contraseña"
+                required
+                type="password"
+              />
             </div>
           </div>
-          <div v-else key="forgot-password-fields" id="form-body">
-            <div id="welcome-lines">
-              <div id="welcome-line-1">ETECSA</div>
-              <div id="welcome-line-2">Escribe tu correo electrónico para recuperar tu contraseña</div>
-            </div>
-            <div id="input-area">
-              <div class="form-inp">
-                <input placeholder="Email" required type="email" />
-              </div>
-            </div>
-            <div id="submit-button-cvr">
-              <button id="submit-button" type="submit">Submit</button>
-            </div>
-            <div id="forgot-pass">
-              <button type="button" @click="toggleForgotPasswordHandler" class="transparent-button">Back to Login</button>
-            </div>
-            <div id="bar"></div>
+          <div id="submit-button-cvr">
+            <button id="submit-button" type="submit">Iniciar sesión</button>
           </div>
-        </transition>
+          <div id="forgot-pass">
+            <a href="#">¿Olvidaste tu contraseña?</a>
+          </div>
+          <div id="bar"></div>
+          <p v-if="error" class="error">{{ error }}</p>
+        </div>
       </form>
     </div>
   </div>
 </template>
 
 <style scoped>
+/* Estilos personalizados para tu formulario de login */
+.error {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
 #difuminado {
   backdrop-filter: blur(10px);
   height: 100vh;

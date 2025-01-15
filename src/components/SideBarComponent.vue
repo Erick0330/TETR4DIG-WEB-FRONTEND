@@ -27,7 +27,7 @@ const goToSettings = () => {
 
 <template>
   <!-- SideBar -->
-  <div class="page-container">
+
     <div class="sidebar"  id="sidebar">
       <ul class="list-group list-group-flush">
         <li class="list-group-item" :class="{ 'questions': currentView === 'Questions' }">
@@ -44,18 +44,13 @@ const goToSettings = () => {
       </ul>
     </div>
 
-  </div>
+
 
 </template>
 
 
 <style scoped>
-.page-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
+
 
 
 
@@ -70,7 +65,7 @@ const goToSettings = () => {
   height: 100%;
   border-right: 2px solid #020e4a;
   background-color: rgb(237, 237, 248);
-  z-index: 100;
+  z-index: 0;
 }
 
 .sidebar ul {

@@ -6,7 +6,6 @@
 </template>
 
 <script setup lang="ts">
-
 </script>
 
 <style scoped>
@@ -26,10 +25,16 @@
   border-bottom: 2px solid gray; /* Grosor y color de la línea inferior */
   transform: rotate(-45deg); /* Rotación para formar la flecha */
   animation: moveDown 1.5s infinite; /* Animación continua */
+  transition: transform 0.2s ease, border-color 0.2s ease, scale 0.2s ease; /* Transiciones suaves */
 }
 
 .arrow:nth-child(2) {
   animation-delay: 0.2s; /* Retraso para sincronizar las dos flechas */
+}
+
+.arrow-container:hover .arrow {
+  transform: scale(1.2) rotate(-45deg); /* Agranda ligeramente la flecha */
+  border-color: darkgray; /* Oscurece el color */
 }
 
 @keyframes moveDown {
