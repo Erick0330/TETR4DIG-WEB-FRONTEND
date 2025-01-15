@@ -288,8 +288,9 @@ const goToLogin = () => {
         <p>Empezar</p>
       </a>
     </div>
+  </section>
 
-    <footer>
+  <footer>
       <div class="button">
         <a href="#"><i class="bi bi-chevron-double-up"></i></a>
       </div>
@@ -307,7 +308,6 @@ const goToLogin = () => {
 
       <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
     </footer>
-  </section>
 </template>
 
 <style scoped>
@@ -638,7 +638,6 @@ h2 {
   left: 0;
   padding: 100px 0 20px 0;
   width: 100%;
-  position: absolute;
   background-color: #ebf0f7; /* Fondo gris claro */
   z-index: 1;
 }
@@ -838,7 +837,6 @@ footer {
   display: grid;
   justify-content: center;
   align-items: center;
-
   left: 0;
   bottom: 0;
   z-index: 150;

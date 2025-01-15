@@ -1,4 +1,4 @@
-import type { createUserDto, User } from '@/types/user';
+import type { createUserDto, updateUserDto, User } from '@/types/user';
 import api from './api';
 
 
@@ -16,7 +16,7 @@ export const createUser = async (user: createUserDto): Promise<User> => {
 };
 
 
-export const updateUser = async (id: number, user: createUserDto): Promise<User> => {
+export const updateUser = async (id: number, user: updateUserDto): Promise<User> => {
   const response = await api.patch(`/users/${id}`, user);
   return response.data;
 };

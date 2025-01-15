@@ -3,7 +3,9 @@ import { onMounted, onBeforeUnmount, ref } from 'vue';
 import * as echarts from 'echarts';
 import HeaderComponent from './HeaderComponent.vue';
 import SideBarComponent from './SideBarComponent.vue';
+import { useCurrentTetraStore } from '@/stores/StoreT';
 
+const state = useCurrentTetraStore();
 // Referencias para los elementos HTML de los gráficos
 const chart1 = ref<HTMLDivElement | null>(null);
 const chart2 = ref<HTMLDivElement | null>(null);
@@ -215,6 +217,7 @@ const resizeCharts = () => {
 
 // Montar y desmontar el componente
 onMounted(() => {
+  state.changeToReports();
   initCharts();
   window.addEventListener('resize', resizeCharts);
 });

@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import HeaderComponent from './HeaderComponent.vue';
 import SideBarComponent from './SideBarComponent.vue';
+import { useCurrentTetraStore } from '@/stores/StoreT';
 
+const state = useCurrentTetraStore();
+
+onMounted(() =>{
+  state.changeToQuestions();
+})
 </script>
 
 <template>
