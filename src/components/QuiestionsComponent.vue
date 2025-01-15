@@ -10,6 +10,8 @@ import SideBarComponent from './SideBarComponent.vue';
   <HeaderComponent />
   <SideBarComponent />
   <!--Tabla de Consultoria-->
+<HeaderComponent/>
+<SideBarComponent/>
 
   <div class="container ">
     <div class="texto">

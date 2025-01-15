@@ -173,6 +173,7 @@ const initCharts = () => {
     if (container) {
       const chartInstance = echarts.init(container);
 
+
       const option = {
         title: {
           text: chartPersectiveNames[index],
