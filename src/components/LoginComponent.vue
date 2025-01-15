@@ -8,6 +8,8 @@ const router = useRouter();
 const email = ref("");
 const password = ref("");
 const error = ref("");
+const toggleForgotPassword = ref(false);
+const toggleCreateAccount = ref(false);
 
 const handleLogin = async () => {
   try {
@@ -18,46 +20,101 @@ const handleLogin = async () => {
     error.value = "Credenciales incorrectas. Por favor, inténtalo nuevamente.";
   }
 };
+
+const goToQuestions = (event: Event) => {
+  event.preventDefault();
+  router.push("/questions");
+};
+
+const toggleForgotPasswordHandler = () => {
+  toggleForgotPassword.value = !toggleForgotPassword.value;
+};
+
+const toggleCreateAccountHandler = () => {
+  toggleCreateAccount.value = !toggleCreateAccount.value;
+};
 </script>
 
 
 <template>
   <div id="difuminado">
     <div id="form-ui">
-      <form @submit.prevent="handleLogin" id="form">
-        <div id="form-body">
-          <div id="welcome-lines">
-            <div id="welcome-line-1">ETECSA</div>
-            <div id="welcome-line-2">Bienvenido de nuevo</div>
-          </div>
-          <div id="input-area">
-            <div class="form-inp">
-              <input
-                v-model="email"
-                placeholder="Correo electrónico"
-                required
-                type="email"
-              />
+
+      <form @submit.prevent="handleLogin" id="form" @submit="goToQuestions">
+        <transition name="slide-left" mode="out-in">
+          <div v-if="!toggleForgotPassword && !toggleCreateAccount" key="login-fields" id="form-body">
+            <div id="welcome-lines">
+              <div id="welcome-line-1">ETECSA</div>
+              <div id="welcome-line-2">Bienvenido de nuevo</div>
             </div>
-            <div class="form-inp">
-              <input
-                v-model="password"
-                placeholder="Contraseña"
-                required
-                type="password"
-              />
+            <div id="input-area">
+              <div class="form-inp">
+                <input v-model="email" placeholder="Account" required type="text"/>
+              </div>
+              <div class="form-inp">
+                <input v-model="password" placeholder="Password" required type="password"/>
+              </div>
             </div>
+            <div id="submit-button-cvr">
+              <button id="submit-button" type="submit">Iniciar sesión</button>
+            </div>
+            <div id="forgot-pass">
+              <button type="button" @click="toggleForgotPasswordHandler" class="transparent-button">¿Olvidaste tu contraseña?</button>
+            </div>
+            <div id="forgot-pass">
+              <button type="button" @click="toggleCreateAccountHandler" class="transparent-button">No tengo cuenta</button>
+            </div>
+            <div id="bar"></div>
+            <p v-if="error" class="error">{{ error }}</p>
           </div>
-          <div id="submit-button-cvr">
-            <button id="submit-button" type="submit">Iniciar sesión</button>
+
+          <div v-else-if="toggleForgotPassword" key="forgot-password-fields" id="form-body">
+            <div id="welcome-lines">
+              <div id="welcome-line-1">ETECSA</div>
+              <div id="welcome-line-2">Escribe tu correo electrónico para recuperar tu contraseña</div>
+            </div>
+            <div id="input-area">
+              <div class="form-inp">
+                <input placeholder="Email" required type="email" />
+              </div>
+            </div>
+            <div id="submit-button-cvr">
+              <button id="submit-button" type="submit">Enviar</button>
+            </div>
+            <div id="forgot-pass">
+              <button type="button" @click="toggleForgotPasswordHandler" class="transparent-button">Back to Login</button>
+            </div>
+            <div id="bar"></div>
           </div>
-          <div id="forgot-pass">
-            <a href="#">¿Olvidaste tu contraseña?</a>
+
+           <!-- Crear una cuenta -->
+          <div v-else key="create-account-fields" id="form-body">
+            <div id="welcome-lines">
+              <div id="welcome-line-1">ETECSA</div>
+              <div id="welcome-line-2">Crear cuenta</div>
+            </div>
+            <div id="input-area">
+              <div class="form-inp">
+                <input placeholder="Email" required type="email" />
+              </div>
+              <div class="form-inp">
+                <input placeholder="Usuario" required type="text" />
+              </div>
+              <div class="form-inp">
+                <input placeholder="Constraseña" required type="email" />
+              </div>
+            </div>
+            <div id="submit-button-cvr">
+              <button id="submit-button" type="submit">Crear Cuenta</button>
+            </div>
+            <div id="forgot-pass">
+              <button type="button" @click="toggleCreateAccountHandler" class="transparent-button">Back to Login</button>
+            </div>
+            <div id="bar"></div>
           </div>
-          <div id="bar"></div>
-          <p v-if="error" class="error">{{ error }}</p>
-        </div>
+        </transition>
       </form>
+
     </div>
   </div>
 </template>
