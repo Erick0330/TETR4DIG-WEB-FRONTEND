@@ -2,14 +2,12 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { loginUser } from "@/services/authService"; // Importamos el servicio de autenticación
+import { useCurrentTetraStore } from "@/stores/StoreT";
 
 
-<<<<<<< Updated upstream
-=======
 const router = useRouter();
 const state = useCurrentTetraStore();
 
->>>>>>> Stashed changes
 const email = ref("");
 const password = ref("");
 const error = ref("");
@@ -56,11 +54,7 @@ const toggleCreateAccountHandler = () => {
           <div v-if="!toggleForgotPassword && !toggleCreateAccount" key="login-fields" id="form-body">
             <div id="welcome-lines">
               <div id="welcome-line-1">ETECSA</div>
-<<<<<<< Updated upstream
-              <div id="welcome-line-2">Bienvenido de nuevo</div>
-=======
               <div id="welcome-line-2">Bienvenido</div>
->>>>>>> Stashed changes
             </div>
             <div id="input-area">
               <div class="form-inp">
