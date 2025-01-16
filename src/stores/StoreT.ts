@@ -7,6 +7,7 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     token: '', // Token JWT del usuario
     isAuthenticated: false, // Estado de autenticación
     isSideBarActive: false,
+    isAdmin:false,
   }),
   actions: {
     // Cambio de vistas
@@ -25,6 +26,12 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     changeToLP() {
       this.currentView = 'LandingPage';
     },
+    changeToVerification() {
+      this.currentView = 'Verification';
+    },
+    changeToProfile() {
+      this.currentView = 'Profile';
+    },
     setToken(token: string) {
       this.token = token;
       localStorage.setItem('token', token); // Guardar en el localStorage si quieres persistir el token
@@ -39,6 +46,11 @@ export const useCurrentTetraStore = defineStore('StoreT', {
       this.isSideBarActive = !this.isSideBarActive;
       console.log(this.isSideBarActive);
     },
-
+    changeIsAdmin() {
+      this.isAdmin = true;
+    },
+    changeIsNotAdmin(){
+      this.isAdmin = false;
+    }
   },
 });

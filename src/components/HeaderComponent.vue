@@ -5,9 +5,6 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-// Controla el estado del sidebar (abierto/cerrado)
-// const isSidebarActive = computed(()=> state.isSideBarActive);
-
 const state = useCurrentTetraStore();
 //const currentView = computed(() => state.currentView);
 
@@ -23,7 +20,7 @@ const goToLP = () => {
 }
 
 // Función para alternar la clase "active" en el sidebar
-const activeSideBar = () => {
+const toggleSidebar = () => {
   state.changeSideBar();
 };
 </script>
@@ -35,7 +32,7 @@ const activeSideBar = () => {
     <header class="navbar navbar-expand-lg bd-navbar sticky-top">
       <nav class="navbar bg fixed-top">
         <div class="container-fluid">
-          <div id="toggle-button" @click="activeSideBar()">
+          <div id="toggle-button" @click="toggleSidebar()">
             <i class="bi bi-list"></i>
           </div>
 

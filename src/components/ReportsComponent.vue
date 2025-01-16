@@ -1,11 +1,30 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import * as echarts from 'echarts';
+import html2pdf from 'html2pdf.js' ;
 import HeaderComponent from './HeaderComponent.vue';
 import SideBarComponent from './SideBarComponent.vue';
 import { useCurrentTetraStore } from '@/stores/StoreT';
 
 const state = useCurrentTetraStore();
+
+const exportPdf = () => {
+  const element = document.getElementById('contentPane1')
+  html2pdf(element).from(element).set({
+    margin: 0,
+    filename: 'documento-prueba.pdf',
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 40 },
+    hotfixes: ["px_scaling"],
+    jsPDF: { unit: 'px', format: 'a4', orientation: 'l' },
+    x: 10,
+    y: 10,
+    width: 50
+  }).save();
+};
+
+
+
 // Referencias para los elementos HTML de los gráficos
 const chart1 = ref<HTMLDivElement | null>(null);
 const chart2 = ref<HTMLDivElement | null>(null);
@@ -234,8 +253,8 @@ onBeforeUnmount(() => {
 
 <template>
 
-<HeaderComponent/>
-<SideBarComponent/>
+  <HeaderComponent />
+  <SideBarComponent />
 
 
   <section class="contentPane">
@@ -251,15 +270,73 @@ onBeforeUnmount(() => {
     <div class="chart-divPerspective">
       <h2>Resultados: Madurez Digital por perspectivas (MDA)</h2>
       <div class="chartContainer">
-        <div id="chart3"  class="donutChartMDP"></div>
-        <div id="chart4"  class="donutChartMDP"></div>
-        <div id="chart5"  class="donutChartMDP"></div>
-        <div id="chart6"  class="donutChartMDP"></div>
-        <div id="chart7"  class="donutChartMDP"></div>
-        <div id="chart8"  class="donutChartMDP"></div>
+        <div id="chart3" class="donutChartMDP"></div>
+        <div id="chart4" class="donutChartMDP"></div>
+        <div id="chart5" class="donutChartMDP"></div>
+        <div id="chart6" class="donutChartMDP"></div>
+        <div id="chart7" class="donutChartMDP"></div>
+        <div id="chart8" class="donutChartMDP"></div>
         <div ref="chart3" class="chart3"></div>
       </div>
 
+    </div>
+
+    <div class="chart-divDimension">
+      <table class="table table-bordered">
+        <thead>
+          <tr class="encab table-primary">
+            <th>Perspectivas</th>
+            <th>Madurez Digital (MDr) media real de autoevaluacion</th>
+            <th>Índice de Madurez Digital (IMD)%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Liderazgo Digital</td>
+            <td>1.0</td>
+            <td>25.0</td>
+          </tr>
+          <tr>
+            <td>Cultura y clima Digital</td>
+            <td>0.0</td>
+            <td>50.0</td>
+          </tr>
+          <tr>
+            <td>Alineamiento estratégico e integración digital</td>
+            <td>1.0</td>
+            <td>0.0</td>
+          </tr>
+          <tr>
+            <td>Trabajo inteligente(Smart working)</td>
+            <td>1.0</td>
+            <td>25.0</td>
+          </tr>
+          <tr>
+            <td>Sistema y aplicaciones de TI</td>
+            <td>2.0</td>
+            <td>50.0</td>
+          </tr>
+          <tr>
+            <td>Migración a la nube / Cloud Computing</td>
+            <td>0.2</td>
+            <td>0.0</td>
+          </tr>
+          <tr>
+            <td>Big Data, Data Analytics, Al / ML y GPS</td>
+            <td>0.4</td>
+            <td>50.0</td>
+          </tr>
+          <tr>
+            <td>Hibridación mundo físico y digital</td>
+            <td>0.6</td>
+            <td>25.0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="submit-button-cvr">
+      <button id="submit-button" @click="exportPdf">Descargar PDF</button>
     </div>
   </section>
 
@@ -306,6 +383,33 @@ onBeforeUnmount(() => {
   flex-wrap: nowrap;
 }
 
+#submit-button-cvr {
+  margin-top: 20px;
+}
+
+#submit-button {
+  display: block;
+  width: 100%;
+  color: #00ff7f;
+  background-color: blue;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+  padding: 14px 13px 12px 13px;
+  border: 0;
+  outline: 1px solid #00ff7f;
+  border-radius: 8px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all ease-in-out 0.3s;
+}
+
+#submit-button:hover {
+  background-color: #00ff7f;
+  color: #161616;
+  cursor: pointer;
+}
+
 .chart-div h2 {
   margin-bottom: 1rem;
 }
@@ -315,6 +419,19 @@ onBeforeUnmount(() => {
   position: relative;
   width: 80%;
   height: 450px;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #070707;
+  border-radius: 5px;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+  text-align: center;
+}
+
+.chart-divDimension {
+  flex-wrap: wrap;
+  margin-top: 50px;
+  position: relative;
+  width: 80%;
+  height: 40%;
   background-color: rgb(255, 255, 255);
   border: 1px solid #070707;
   border-radius: 5px;
@@ -336,7 +453,8 @@ onBeforeUnmount(() => {
 }
 
 .donutChartMDP {
-  width: 30%; /* Ancho predeterminado para pantallas grandes */
+  width: 30%;
+  /* Ancho predeterminado para pantallas grandes */
   height: 350px;
 }
 
@@ -373,8 +491,10 @@ onBeforeUnmount(() => {
   }
 
   .donutChartMDP {
-    width: 100%; /* Ancho del 100% cuando el dispositivo tenga 990px o menos */
-    margin-bottom: 20px; /* Espacio entre gráficas */
+    width: 100%;
+    /* Ancho del 100% cuando el dispositivo tenga 990px o menos */
+    margin-bottom: 20px;
+    /* Espacio entre gráficas */
   }
 
   .contentPane {
@@ -393,16 +513,16 @@ onBeforeUnmount(() => {
   }
 
   .chart-divPerspective {
-  margin-top: 50px;
-  position: relative;
-  width: 80%;
-  height: 200%;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid #070707;
-  border-radius: 5px;
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
-  text-align: center;
-}
+    margin-top: 50px;
+    position: relative;
+    width: 80%;
+    height: 200%;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #070707;
+    border-radius: 5px;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+    text-align: center;
+  }
 }
 
 /* Footer  */
@@ -416,8 +536,10 @@ footer {
   align-items: center;
   left: 0;
   bottom: 0;
-  z-index: 10; /* Asegura que esté encima del footer */
-  position: relative; /* Ya configurado correctamente */
+  z-index: 10;
+  /* Asegura que esté encima del footer */
+  position: relative;
+  /* Ya configurado correctamente */
 }
 
 footer .contenedor {

@@ -34,6 +34,11 @@ const toggleForgotPasswordHandler = () => {
 const toggleCreateAccountHandler = () => {
   toggleCreateAccount.value = !toggleCreateAccount.value;
 };
+
+const goToVerification = () => {
+  state.changeToVerification();
+  router.push("/verification");
+};
 </script>
 
 
@@ -82,7 +87,7 @@ const toggleCreateAccountHandler = () => {
               </div>
             </div>
             <div id="submit-button-cvr">
-              <button id="submit-button" type="submit">Enviar</button>
+              <button id="submit-button" @click="goToVerification()" type="submit">Enviar</button>
             </div>
             <div id="forgot-pass">
               <button type="button" @click="toggleForgotPasswordHandler" class="transparent-button">Back to

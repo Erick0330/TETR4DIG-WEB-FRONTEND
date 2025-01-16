@@ -56,7 +56,7 @@ const goToLogin = () => {
             type="button"
             data-bs-target="#carouselExampleCaptions"
             data-bs-slide-to="0"
-            class="active"
+            class="active arrow"
             aria-current="true"
             aria-label="Slide 1"
           ></button>
@@ -65,12 +65,14 @@ const goToLogin = () => {
             data-bs-target="#carouselExampleCaptions"
             data-bs-slide-to="1"
             aria-label="Slide 2"
+            class="arrow"
           ></button>
           <button
             type="button"
             data-bs-target="#carouselExampleCaptions"
             data-bs-slide-to="2"
             aria-label="Slide 3"
+            class="arrow"
           ></button>
         </div>
         <div class="carousel-inner">
@@ -526,8 +528,8 @@ h2 {
   justify-self: center;
   margin-top: 20px;
   margin-bottom: 20px;
-  border: 3px solid rgb(0, 0, 102);
-  background-color: #1f7ace;
+  background: linear-gradient(to right, #e3f2fd, #bbdefb); /* Degradado azul suave */
+  border: 3px solid #85c6fc;
 }
 
 .carousel .carousel-inner,
@@ -547,12 +549,15 @@ h2 {
 
 .carousel-control-prev,
 .carousel-control-next {
-  width: 7% !important;
+  width: 10% !important;
+  font-weight: bold;
 }
+
 
 .carousel-indicators {
   margin-bottom: 0 !important;
 }
+
 
 .form {
   display: flex;
@@ -643,8 +648,9 @@ h2 {
   left: 0;
   padding: 100px 0 20px 0;
   width: 100%;
-  background-color: #ebf0f7; /* Fondo gris claro */
+  background-color: #ebf0f7;
   z-index: 1;
+  padding-top: 20px;
 }
 
 .como-usar .contenedor {
@@ -653,6 +659,7 @@ h2 {
   flex-direction: column;
   width: 90%;
   justify-self: center;
+  padding: 50px;
 }
 
 .como-usar .contenedor h2 {
@@ -687,8 +694,10 @@ h2 {
 }
 
 .niveles-implementacion ul li:hover {
-  background-color: #101f6a;
-  color: antiquewhite;
+  background-color: #c6def1; /* Azul claro para el fondo */
+  color: #0d47a1; /* Azul oscuro para el texto */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Suaviza el cambio */
+  cursor: pointer; /* Indica interactividad */
 }
 
 @media (max-width: 430px) {
@@ -816,11 +825,11 @@ h2 {
 
 .table thead {
   font-size: 22px;
-  --bs-table-bg: rgb(8, 8, 135) !important;
+  --bs-table-bg: #a5d2f7 !important;
 }
 
 .table thead th {
-  color: antiquewhite;
+  color: black;
 }
 
 .table th {

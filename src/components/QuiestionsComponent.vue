@@ -184,10 +184,12 @@ onMounted( () => {
 /* Title for consultoria */
 .consultoria {
   text-align: center;
-  font-size: 40px;
+  font-size: 47px;
   margin-top: 70px;
   color: #003366;
+  font-weight: bold;
 }
+
 
 /* Title styles for perspective and dimension */
 .ambit-title,

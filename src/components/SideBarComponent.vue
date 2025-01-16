@@ -5,10 +5,14 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
+
+
 // Controla el estado del sidebar (abierto/cerrado)
 const state = useCurrentTetraStore();
 
-const isSidebarActive = computed(()=> state.getIsSideBarActive())
+const isAdmin = computed(() => state.isAdmin)
+
+const isSidebarActive = computed(() => state.getIsSideBarActive())
 
 const currentView = computed(() => state.currentView);
 const goToReports = () => {
@@ -24,26 +28,36 @@ const goToSettings = () => {
   router.push("/settings")
 }
 
+const goToProfile = () => {
+  state.changeToProfile();
+  router.push("/profile")
+}
+
+
 </script>
 
 <template>
   <!-- SideBar -->
 
-    <div class="sidebar" :class="{ active: isSidebarActive }"  id="sidebar">
-      <ul class="list-group list-group-flush">
+  <div class="sidebar" :class="{ active: isSidebarActive }" id="sidebar">
+    <ul class="list-group list-group-flush">
         <li class="list-group-item" :class="{ 'questions': currentView === 'Questions' }">
           <a @click="goToQuestions">Cuestionario</a>
         </li>
 
-        <li class="list-group-item" :class="{ 'reports': currentView === 'Reports' }">
-          <a @click="goToReports">Reportes</a>
-        </li>
+      <li class="list-group-item" :class="{ 'reports': currentView === 'Reports' }">
+        <a @click="goToReports">Reportes</a>
+      </li>
 
-        <li class="list-group-item" :class="{ 'settings': currentView === 'Settings' }">
-          <a @click="goToSettings">Configuración</a>
-        </li>
-      </ul>
-    </div>
+      <li v-if="isAdmin === true" class="list-group-item" :class="{ 'settings': currentView === 'Settings' }">
+        <a @click="goToSettings">Configuración</a>
+      </li>
+
+      <li v-else class="list-group-item" :class="{ 'settings': currentView === 'Profile' }">
+        <a @click="goToProfile">Perfil</a>
+      </li>
+    </ul>
+  </div>
 
 
 
@@ -51,10 +65,6 @@ const goToSettings = () => {
 
 
 <style scoped>
-
-
-
-
 /* Sidebar (Fixed on the left) */
 .sidebar {
   width: 250px;
@@ -86,26 +96,17 @@ const goToSettings = () => {
 .sidebar .list-group-item {
   cursor: pointer;
   font-size: 20px;
+  transition: font-size 0.3s ease, text-shadow 0.3s ease, color 0.3s ease;
 }
 
-
-.sidebar .list-group-item.reports {
-  font-size: 30px;
-  text-shadow: 0 0 10px #afb7e0;
-  font-weight: bolder;
-}
-
-.sidebar .list-group-item.questions {
-  font-size: 30px;
-  text-shadow: 0 0 10px #afb7e0;
-  font-weight: bolder;
-}
-
+.sidebar .list-group-item.reports,
+.sidebar .list-group-item.questions,
 .sidebar .list-group-item.settings {
   font-size: 30px;
   text-shadow: 0 0 10px #afb7e0;
   font-weight: bolder;
 }
+
 
 .sidebar ul li a {
   color: black;
