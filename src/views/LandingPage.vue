@@ -291,23 +291,28 @@ const goToLogin = () => {
   </section>
 
   <footer>
-      <div class="button">
-        <a href="#"><i class="bi bi-chevron-double-up"></i></a>
-      </div>
-      <div class="contenedor">
-        <div class="redes">
-          <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
-            <i class="bi bi-envelope"></i>
-          </a>
+    <div class="button">
+      <a href="#"><i class="bi bi-chevron-double-up"></i></a>
+    </div>
+    <div class="contenedor">
+      <div class="redes">
+        <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
+          <i class="bi bi-envelope"></i>
+        </a>
 
-          <a href="https://www.etecsa.cu/" target="_blank">
-            <img src="/logoheader.png" alt="página oficial de ETECSA" />
-          </a>
-        </div>
+        <a href="https://www.etecsa.cu/" target="_blank">
+          <img src="/logoheader.png" alt="página oficial de ETECSA" />
+        </a>
       </div>
+    </div>
 
-      <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
-    </footer>
+    <div class="Ftext">
+      <div class="container">
+        <p>&copy; 2025, TETRADIG. Todos los derechos reservados</p>
+      </div>
+    </div>
+
+  </footer>
 </template>
 
 <style scoped>
@@ -895,5 +900,11 @@ footer .contenedor .redes {
 
 footer p {
   color: antiquewhite;
+}
+
+footer .Ftext {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

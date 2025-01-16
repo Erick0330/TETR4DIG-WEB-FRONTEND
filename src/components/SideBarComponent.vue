@@ -66,7 +66,7 @@ const goToSettings = () => {
   height: 100%;
   border-right: 2px solid #020e4a;
   background-color: rgb(237, 237, 248);
-  z-index: 0;
+  z-index: 1;
 }
 
 .sidebar ul {

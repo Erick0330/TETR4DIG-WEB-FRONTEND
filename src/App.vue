@@ -12,9 +12,7 @@
 
 <style scoped>
 .page-wrapper {
-  /* margin-top: 1200px; */
-  /* position: absolute; */
-  /* display: flex; */
+  min-height: 100vh;
   width: 100%;
 }
 

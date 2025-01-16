@@ -279,7 +279,12 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+    <div class="Ftext">
+      <div class="Fcontainer">
+        <p>&copy; 2025, TETRADIG. Todos los derechos reservados</p>
+      </div>
+    </div>
+
   </footer>
 
 </template>
@@ -355,6 +360,8 @@ onBeforeUnmount(() => {
 @media (max-width: 990px) {
   .chartContainer {
     flex-direction: column;
+    width: 100%;
+    padding-right: 5px;
   }
 
   .chart1,
@@ -372,15 +379,15 @@ onBeforeUnmount(() => {
 
   .contentPane {
     margin-top: 100px;
-    margin-left: 25px;
-    padding-left: 10px;
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
     margin-bottom: 300px;
   }
 
   .chart-div {
     position: relative;
     margin-top: 10px;
-    margin-left: 25px;
     padding-top: 5px;
     height: 150vh;
   }
@@ -466,5 +473,11 @@ footer .contenedor .redes {
 
 footer p {
   color: antiquewhite;
+}
+
+footer .Ftext {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

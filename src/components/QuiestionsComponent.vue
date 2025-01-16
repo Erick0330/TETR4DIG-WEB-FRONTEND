@@ -11,6 +11,7 @@ import { getDimensionByIdPerspective } from '@/services/dimensionsService';
 import { getQuestionByIdDimension, updateQuestion } from '@/services/questionsService';
 import type { Question } from '@/types/question';
 import { useCurrentTetraStore } from '@/stores/StoreT';
+import router from '@/router';
 
 
 const state = useCurrentTetraStore();
@@ -92,6 +93,8 @@ const goToNextDimension = async () => {
       await loadPerspectives(ambits.value[currentAmbitIndex.value].id_ambit);
     } else {
       alert('Has completado todas las preguntas.');
+      state.changeToReports();
+      router.push('/reports')
     }
   } catch (error) {
     console.error('Error al actualizar o cambiar dimensión:', error);
@@ -159,7 +162,12 @@ onMounted( () => {
       </div>
     </div>
 
-    <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+    <div class="Ftext">
+      <div class="Fcontainer">
+        <p>&copy; 2025, TETRADIG. Todos los derechos reservados</p>
+      </div>
+    </div>
+
   </footer>
 </template>
 
@@ -169,8 +177,8 @@ onMounted( () => {
 .container {
   margin-top: 100px;
   margin-bottom: 100px;
-  width: 100%;
-  min-height: 70vh;
+  max-width: 60%;
+  min-height: 65vh;
 }
 
 /* Title for consultoria */
@@ -254,7 +262,6 @@ form-select {
   }
 }
 
-
 footer {
   padding: 0 0 0 0;
   width: 100%;
@@ -265,9 +272,7 @@ footer {
   left: 0;
   bottom: 0;
   z-index: 10;
-  /* Asegura que esté encima del footer */
   position: relative;
-  /* Ya configurado correctamente */
 }
 
 footer .contenedor {
@@ -323,5 +328,11 @@ footer .contenedor .redes {
 
 footer p {
   color: antiquewhite;
+}
+
+footer .Ftext {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

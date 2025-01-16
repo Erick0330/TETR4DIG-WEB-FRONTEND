@@ -80,9 +80,9 @@ const handleEntry = async (id: number) => {
     currentEntity.value = 'Dimensiones';
     currentPerspective = id;
 
-    try{
-    dimensions.value = await getDimensionByIdPerspective(id);
-    dimensions.value.sort((a, b) => a.id_dimension - b.id_dimension); // Ordenar dimensiones por ID de menor a mayor
+    try {
+      dimensions.value = await getDimensionByIdPerspective(id);
+      dimensions.value.sort((a, b) => a.id_dimension - b.id_dimension); // Ordenar dimensiones por ID de menor a mayor
     } catch (error) {
       console.error("Error al cargar las dimensiones:", error);
       errorMessageDimension.value = "Error al cargar las dimensiones.";
@@ -91,9 +91,9 @@ const handleEntry = async (id: number) => {
   else if (currentEntity.value === 'Dimensiones') {
     currentEntity.value = 'Preguntas';
     currentDimension = id;
-    try{
-    questions.value = await getQuestionByIdDimension(id);
-    questions.value.sort((a, b) => a.id_question - b.id_question)
+    try {
+      questions.value = await getQuestionByIdDimension(id);
+      questions.value.sort((a, b) => a.id_question - b.id_question)
     } catch (error) {
       console.error("Error al cargar las dimensiones:", error);
       errorMessageDimension.value = "Error al cargar las dimensiones.";
@@ -627,7 +627,7 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
 
         <div v-if="currentEntity === 'Ámbitos'" class="preguntas-form">
           <div class="add-question-form">
-            <button class="add-button" @click="handleCreateAmbit" title="Agregar">
+            <button v-if="!state.isSideBarActive" class="add-button" @click="handleCreateAmbit" title="Agregar">
               <img src="/img/TypcnPlus.svg" alt="Agregar" />
             </button>
             <input v-model="newQuestionText" type="text" placeholder="Escribe el nombre del nuevo ámbito"
@@ -742,7 +742,12 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
       </div>
     </div>
 
-    <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+    <div class="Ftext">
+      <div class="container">
+        <p>&copy; 2025, TETRADIG. Todos los derechos reservados</p>
+      </div>
+    </div>
+
   </footer>
 </template>
 
@@ -757,6 +762,8 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
   gap: 40px;
   margin-top: 80px;
   margin-bottom: 50px;
+  margin-right: 20px;
+  margin-left: 20px;
 
 }
 
@@ -778,6 +785,21 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
   margin-top: 80px;
   margin-bottom: 80px;
   background-color: white;
+
+}
+
+/* Reducción progresiva en pantallas más pequeñas */
+@media (max-width: 1400px) {
+
+  .main {
+    width: 45%;
+    justify-self: center;
+  }
+
+  button img {
+    width: 27px;
+    height: 27px;
+  }
 }
 
 .add-question-form {
@@ -806,21 +828,9 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
 
 .add-question-form .points-input {
   width: 80px;
-  /* Ajusta el tamaño del input de puntos */
 }
 
-.add-button {
-  padding: 8px;
-  background-color: #007bff;
-  border-radius: 50%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-}
 
-.add-button img {
-  width: 30px;
-  height: 30px;
-}
 
 .text {
   display: flex;
@@ -834,113 +844,13 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
   font-size: 20px;
 }
 
-.indicadores,
-.usuarios {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80%;
-  max-width: 800px;
-  margin-top: 150px;
-  padding: 20px;
-  border: 1px solid black;
-  border-radius: 10px;
-  background: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
 .usuarios {
   margin-bottom: 300px;
 }
 
-@media (max-width: 1430px) {
-
-  .indicadores,
-  .usuarios {
-    width: 60%;
-  }
-}
-
-@media (max-width: 768px) {
-  .table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    /* Asegura que la tabla sea desplazable horizontalmente */
-    -webkit-overflow-scrolling: touch;
-    /* Mejora la experiencia en dispositivos táctiles */
-  }
-
-  .table {
-    width: 100%;
-    table-layout: fixed;
-    /* Hace que las celdas de la tabla se ajusten automáticamente */
-  }
-
-  .indicadores,
-  .usuarios {
-    width: 90%;
-    padding: 10px;
-    margin-top: 100px;
-    /* Reduce el margen superior en pantallas pequeñas */
-    margin-left: 5px;
-  }
-
-  h2 {
-    font-size: 24px;
-    /* Ajusta el tamaño de fuente para encabezados */
-  }
-
-  .table th,
-  .table td {
-    padding: 8px;
-    /* Reduce el padding para tablas en pantallas pequeñas */
-  }
 
 
-  .container {
-    width: 100%;
-    /* Asegura que el contenedor ocupe el 100% del ancho */
-    margin: 10px;
-    /* Añade un pequeño margen alrededor del contenedor */
-  }
-
-  h2 {
-    font-size: 32px;
-    /* Reduce el tamaño de los encabezados */
-    margin-bottom: 15px;
-    /* Ajusta el margen inferior */
-  }
-
-  button img {
-    width: 25px;
-    /* Reduce el tamaño de las imágenes en los botones */
-    height: 25px;
-  }
-
-  input {
-    width: 100%;
-    padding: 8px;
-    /* Aumenta un poco el padding en inputs */
-    font-size: 16px;
-    /* Ajusta el tamaño de la fuente en inputs */
-  }
-
-  .add-button {
-    padding: 8px;
-    /* Ajusta el padding del botón */
-    background-color: #007bff;
-    border-radius: 50%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-  }
-
-  .add-button img {
-    width: 30px;
-    /* Ajusta el tamaño de la imagen dentro del botón */
-    height: 30px;
-  }
-}
 
 .container {
   max-width: 800px;
@@ -969,22 +879,78 @@ p {
 .table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
   table-layout: fixed;
   word-wrap: break-word;
-  /* Permite que las palabras se ajusten a la línea */
-  /* Asegura que la tabla no se desborde y se ajuste */
+  text-align: center;
+  /* Centra todo el texto en la tabla */
 }
 
+/* Asegurarse de que todas las celdas tengan el texto centrado */
 .table th,
 .table td {
   padding: 10px;
   border: 1px solid rgb(0, 0, 102);
+  text-align: center;
+  /* Centra el texto también en las celdas */
 }
 
+/* Estilo para los encabezados */
 .table-primary {
   color: #212529;
   font-weight: bold;
+}
+
+/* Cambios responsivos para pantallas pequeñas */
+@media (max-width: 990px) {
+
+  .table th,
+  .table td {
+    padding: 8px;
+    /* Reduce el padding en pantallas pequeñas */
+    font-size: 14px;
+    /* Reduce el tamaño de la fuente para mejor legibilidad en dispositivos móviles */
+  }
+
+  .container {
+    width: 100%;
+    margin: 10px;
+    /* Añade margen al contenedor */
+  }
+
+  h2 {
+    font-size: 32px;
+    /* Reduce el tamaño de los encabezados */
+    margin-bottom: 15px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    /* Asegura que la tabla se desplace horizontalmente si es necesario */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sectionC,
+  .sectionCU {
+    padding: 15px;
+    /* Ajusta el padding en pantallas pequeñas */
+  }
+
+  .main {
+    width: 90%;
+  }
+}
+
+/* Estilo para títulos y otros elementos */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.text p {
+  font-size: 20px;
+  color: #666;
 }
 
 .encab {
@@ -1057,7 +1023,7 @@ footer .button {
   font-size: 30px;
   justify-self: center;
   margin-top: -20px;
-  width: 13%;
+  width: 10%;
   background-color: #39c;
   border-radius: 50%;
   display: flex;
@@ -1096,5 +1062,11 @@ footer .contenedor .redes {
 
 footer p {
   color: antiquewhite;
+}
+
+footer .Ftext {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
