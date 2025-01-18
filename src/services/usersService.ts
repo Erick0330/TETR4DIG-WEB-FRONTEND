@@ -1,4 +1,4 @@
-import type { createUserDto, updateUserDto, User } from '@/types/user';
+import type { createUserDto, getUserDto, updateUserDto, User } from '@/types/user';
 import api from './api';
 
 
@@ -32,7 +32,7 @@ export const getUserById = async (id: number): Promise<User> => {
   return response.data;
 };
 
-export const getCurrentUserName = async (): Promise<string> => {
+export const getCurrentUserName = async (): Promise<getUserDto> => {
   const response = await api.get('/users/current');
   return response.data;
 };

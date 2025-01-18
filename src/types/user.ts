@@ -19,3 +19,8 @@ export interface updateUserDto {
   email: string;
   rol: string;
 }
+
+export interface getUserDto {
+  name: string;
+  rol: string;
+}

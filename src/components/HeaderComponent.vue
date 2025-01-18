@@ -31,8 +31,12 @@ const toggleSidebar = () => {
 
 onMounted(async () => {
   try {
+    const u = await getCurrentUserName();
+    state.changeCurrentUser(u.name);
+    if (u.rol === 'ADMIN')
+      state.changeIsAdmin();
 
-    state.changeCurrentUser(await getCurrentUserName())
+      console.log(u.rol)
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   catch (e) {
@@ -69,13 +73,13 @@ onMounted(async () => {
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 list-group">
 
                 <div class="border"></div>
-                <li class="nav-item">
-                  <a class="nav-link margin">{{ currentUser }}</a>
+                <li  class="nav-item">
+                  <a  class="name nav-link margin">{{ currentUser }}</a>
                 </li>
 
                 <div class="border"></div>
                 <li class="nav-item">
-                  <a class="nav-link margin" style="cursor: pointer;" @click="gotoLogin">Editar usuario</a>
+                  <a class="nav-link margin" style="cursor: pointer;" @click="gotoLogin">Cerrar sesión</a>
                 </li>
 
               </ul>
@@ -117,7 +121,10 @@ header .navbar .container-fluid {
 header .navbar .container-fluid .offcanvas-body li a {
   color: black;
   font-size: 100%;
+}
 
+.name{
+  cursor: default;
 }
 
 header .navbar .container-fluid .offcanvas-body li a:hover {
