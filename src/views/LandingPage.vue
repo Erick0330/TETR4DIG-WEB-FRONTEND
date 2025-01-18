@@ -825,11 +825,14 @@ h2 {
 
 .table thead {
   font-size: 22px;
-  --bs-table-bg: #a5d2f7 !important;
+  --bs-table-bg: #1f7ace !important;
+
 }
 
 .table thead th {
-  color: black;
+  color: #fff;
+  font-size: 25px;
+  font-weight: bold;
 }
 
 .table th {

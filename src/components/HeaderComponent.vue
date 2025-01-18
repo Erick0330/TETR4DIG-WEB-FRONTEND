@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed, onMounted } from "vue";
 import { useCurrentTetraStore } from "../stores/StoreT";
 import { useRouter } from "vue-router";
+import { getCurrentUserName } from "@/services/usersService";
 
 
 const router = useRouter();
@@ -8,6 +10,7 @@ const router = useRouter();
 const state = useCurrentTetraStore();
 //const currentView = computed(() => state.currentView);
 
+const currentUser = computed(() => state.currentUser);
 
 const gotoLogin = () => {
   state.changeToLogin();
@@ -22,7 +25,20 @@ const goToLP = () => {
 // Función para alternar la clase "active" en el sidebar
 const toggleSidebar = () => {
   state.changeSideBar();
+
+
 };
+
+onMounted(async () => {
+  try {
+
+    state.changeCurrentUser(await getCurrentUserName())
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  catch (e) {
+    alert("Problema al obtener los usuarios");
+  }
+});
 </script>
 
 
@@ -51,13 +67,10 @@ const toggleSidebar = () => {
 
             <div class="offcanvas-body">
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 list-group">
-                <li class="nav-item">
-                  <a class="nav-link active margin" aria-current="page">Admin</a>
-                </li>
 
                 <div class="border"></div>
                 <li class="nav-item">
-                  <a class="nav-link margin">luis@gmail.com</a>
+                  <a class="nav-link margin">{{ currentUser }}</a>
                 </li>
 
                 <div class="border"></div>
@@ -103,8 +116,8 @@ header .navbar .container-fluid {
 
 header .navbar .container-fluid .offcanvas-body li a {
   color: black;
-  font-size: 150%;
-  font-weight: bold;
+  font-size: 100%;
+
 }
 
 header .navbar .container-fluid .offcanvas-body li a:hover {

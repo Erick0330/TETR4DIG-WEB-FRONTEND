@@ -12,6 +12,7 @@ import { getQuestionByIdDimension, updateQuestion } from '@/services/questionsSe
 import type { Question } from '@/types/question';
 import { useCurrentTetraStore } from '@/stores/StoreT';
 import router from '@/router';
+import { createUserTest } from '@/services/userTestsService';
 
 
 const state = useCurrentTetraStore();
@@ -30,6 +31,7 @@ const loadData = async () => {
   try {
     ambits.value = await getAmbits();
     if (ambits.value.length > 0) {
+      ambits.value.sort((a,b) => a.id_ambit - b.id_ambit)
       await loadPerspectives(ambits.value[currentAmbitIndex.value].id_ambit);
     }
   } catch (error) {
@@ -41,6 +43,7 @@ const loadPerspectives = async (ambitId: number) => {
   try {
     perspectives.value = await getPerspectiveByIdAmbit(ambitId);
     if (perspectives.value.length > 0) {
+      perspectives.value.sort((a,b) => a.id_perspective - b.id_perspective)
       await loadDimensions(perspectives.value[currentPerspectiveIndex.value].id_perspective);
     }
   } catch (error) {
@@ -52,6 +55,7 @@ const loadDimensions = async (perspectiveId: number) => {
   try {
     dimensions.value = await getDimensionByIdPerspective(perspectiveId);
     if (dimensions.value.length > 0) {
+      dimensions.value.sort((a,b) => a.id_dimension - b.id_dimension)
       await loadQuestions(dimensions.value[currentDimensionIndex.value].id_dimension);
     }
   } catch (error) {
@@ -62,6 +66,8 @@ const loadDimensions = async (perspectiveId: number) => {
 const loadQuestions = async (dimensionId: number) => {
   try {
     questions.value = await getQuestionByIdDimension(dimensionId);
+    questions.value.sort((a,b) => a.id_question - b.id_question)
+
   } catch (error) {
     console.error('Error al cargar las preguntas:', error);
   }
@@ -93,8 +99,13 @@ const goToNextDimension = async () => {
       await loadPerspectives(ambits.value[currentAmbitIndex.value].id_ambit);
     } else {
       alert('Has completado todas las preguntas.');
+      createUserTest({ id_user: 1,
+        ambits_result: ' ',
+        perspectives_result: ' ',
+        dimensions_result: ' ' });
       state.changeToReports();
       router.push('/reports')
+
     }
   } catch (error) {
     console.error('Error al actualizar o cambiar dimensión:', error);

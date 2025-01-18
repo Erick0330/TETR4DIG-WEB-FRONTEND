@@ -4,15 +4,30 @@ import { useCurrentTetraStore } from "../stores/StoreT";
 import { useRouter } from "vue-router";
 import SideBarComponent from "./SideBarComponent.vue";
 import HeaderComponent from "./HeaderComponent.vue";
+import { onMounted, ref } from "vue";
+import type { UserTest } from "@/types/userTest";
+import { getUserTests } from "@/services/userTestsService";
+
 
 const state = useCurrentTetraStore();
 const router = useRouter();
 
+const tests = ref<UserTest[]>([]);
 
 const goToReports = () => {
   state.changeToReports();
   router.push("/reports");
 };
+
+onMounted(async () => {
+  state.changeToProfile();
+  try {
+    tests.value = await getUserTests();
+    tests.value.sort((a, b) => a.id - b.id); // Ordenar preguntas por ID de menor a mayor
+  } catch (error) {
+    console.error("Error al cargar los test:", error);
+  }
+});
 
 </script>
 <template>
@@ -30,6 +45,16 @@ const goToReports = () => {
         <button type="button" class="btn btn-primary">Cambiar Usuario</button>
       </div>
 
+      <div class="container mt-5">
+        <h2>Contraseña</h2>
+
+        <input placeholder="Contraseña" required type="text" />
+
+        <p>Si deseas cambiar tu contraseña, ingresa la nueva contraseña en el campo anterior y haz clic en "Cambiar
+          Contraseña", y se le enviará un email para guardar los cambios.</p>
+        <button type="button" class="btn btn-primary">Cambiar Contraseña</button>
+      </div>
+
     </section>
   </div>
   <div class="main">
@@ -39,46 +64,16 @@ const goToReports = () => {
         <table class="table table-bordered">
           <thead>
             <tr class="encab table-primary">
-              <th>Fecha de Los Tests</th>
-              <th>Tests</th>
+              <th>No.</th>
+              <th>Fecha</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>25/7/1970</td>
-              <td><a @click="goToReports">Ver Test</a></td>
-            </tr>
-            <tr>
-              <td>25/7/1970</td>
-              <td><a @click="goToReports">Ver Test</a></td>
-            </tr>
-            <tr>
-              <td>27/8/1432</td>
-              <td><a @click="goToReports">Ver Test</a></td>
-            </tr>
-            <tr>
-              <td>10/10/2003</td>
-              <td><a @click="goToReports">Ver Test</a></td>
-            </tr>
-            <tr>
-              <td>10/10/2003</td>
-              <td><a @click="goToReports">Ver Test</a></td>
-            </tr>
-            <tr>
-              <td>10/10/2003</td>
-              <td><a @click="goToReports">Ver Test</a></td>
-            </tr>
-            <tr>
-              <td>10/10/2003</td>
-              <td><a @click="goToReports">Ver Test</a></td>
-            </tr>
-            <tr>
-              <td>10/10/2003</td>
-              <td><a @click="goToReports">Ver Test</a></td>
-            </tr>
-            <tr>
-              <td>10/10/2003</td>
-              <td><a @click="goToReports">Ver Test</a></td>
+            <tr class="redic" @click="goToReports()" v-for="(test) in tests" :key="test.id">
+              <td>{{ test.id }}</td>
+              <td >
+                {{ test.testDate }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -119,7 +114,14 @@ const goToReports = () => {
   gap: 40px;
   margin-top: 100px;
   margin-bottom: 100px;
+  min-height: 23vh;
 }
+
+.redic {
+  cursor: pointer;
+}
+
+
 
 .cambiarUsuario,
 .historialTest {

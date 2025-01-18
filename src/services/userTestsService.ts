@@ -3,7 +3,7 @@ import type { createUserTestsDto, UserTest } from '@/types/userTest';
 
 
 export const getUserTests = async (): Promise<UserTest[]> => {
-  const response = await api.get('/user-test');
+  const response = await api.get('/user-test/findAll/1');
   return response.data;
 };
 

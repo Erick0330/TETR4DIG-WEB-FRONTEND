@@ -31,3 +31,8 @@ export const getUserById = async (id: number): Promise<User> => {
   const response = await api.get(`/users/${id}`);
   return response.data;
 };
+
+export const getCurrentUserName = async (): Promise<string> => {
+  const response = await api.get('/users/current');
+  return response.data;
+};

@@ -8,8 +8,12 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     isAuthenticated: false, // Estado de autenticación
     isSideBarActive: false,
     isAdmin:false,
+    currentUser: '',
   }),
   actions: {
+    changeCurrentUser(user: string) {
+      this.currentUser = user;
+    },
     // Cambio de vistas
     changeToQuestions() {
       this.currentView = 'Questions';

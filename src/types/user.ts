@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   rol: string;
+  current: boolean;
 }
 
 export interface createUserDto {

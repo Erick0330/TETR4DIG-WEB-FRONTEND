@@ -1,27 +1,33 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import * as echarts from 'echarts';
-import html2pdf from 'html2pdf.js' ;
 import HeaderComponent from './HeaderComponent.vue';
 import SideBarComponent from './SideBarComponent.vue';
 import { useCurrentTetraStore } from '@/stores/StoreT';
+import jsPDF from 'jspdf';
 
 const state = useCurrentTetraStore();
 
-const exportPdf = () => {
-  const element = document.getElementById('contentPane1')
-  html2pdf(element).from(element).set({
-    margin: 0,
-    filename: 'documento-prueba.pdf',
-    image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 40 },
-    hotfixes: ["px_scaling"],
-    jsPDF: { unit: 'px', format: 'a4', orientation: 'l' },
-    x: 10,
-    y: 10,
-    width: 50
-  }).save();
-};
+const exportToPDF = () => {
+  const doc = new jsPDF()
+  const element = document.getElementById('contentPane');
+
+
+  if (element) {
+    doc.html(element, {
+      callback: function(pdf) {
+        pdf.save("prueba.pdf");
+      },
+      x: -68,
+      y: -37,
+      html2canvas: {scale: 0.17}
+    });
+  } else {
+    console.error("Elemento con ID 'contentPane1' no encontrado.");
+  }
+
+
+}
 
 
 
@@ -41,6 +47,7 @@ let chart3Instance: echarts.ECharts | null = null;
 
 // Configuración para el gráfico 1 (Gráfico de Donut de MDA)
 const getOptionChart1 = (): echarts.EChartsOption => ({
+  backgroundColor: '#fff',
   title: {
     text: 'Índice Madurez Digital Global (MDG)',
     left: 'center',
@@ -84,6 +91,7 @@ const getOptionChart1 = (): echarts.EChartsOption => ({
 
 // Configuración para el gráfico 2 (Gráfico de Barra de MDA)
 const getOptionChart2 = (): echarts.EChartsOption => ({
+  backgroundColor: '#fff',
   tooltip: {
     trigger: 'axis',
     axisPointer: {
@@ -131,6 +139,7 @@ const getOptionChart2 = (): echarts.EChartsOption => ({
 
 // Configuración para el gráfico 3 (Gráfico Radial de MDD)
 const getOptionChart3 = (): echarts.EChartsOption => ({
+  backgroundColor: '#fff',
   title: {
     text: 'Basic Radar Chart',
     left: 'center'
@@ -257,7 +266,7 @@ onBeforeUnmount(() => {
   <SideBarComponent />
 
 
-  <section class="contentPane">
+  <section id="contentPane" class="contentPane">
     <div class="chart-div">
       <h2>Resultados: Madurez Digital por ámbitos (MDA)</h2>
       <div class="chartContainer">
@@ -336,7 +345,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div id="submit-button-cvr">
-      <button id="submit-button" @click="exportPdf">Descargar PDF</button>
+      <button id="submit-button" @click="exportToPDF()">Descargar PDF</button>
     </div>
   </section>
 
@@ -390,14 +399,14 @@ onBeforeUnmount(() => {
 #submit-button {
   display: block;
   width: 100%;
-  color: #00ff7f;
+  color: white;
   background-color: blue;
   font-weight: 600;
   font-size: 14px;
   margin: 0;
   padding: 14px 13px 12px 13px;
   border: 0;
-  outline: 1px solid #00ff7f;
+  /* outline: 1px solid #00ff7f; */
   border-radius: 8px;
   line-height: 1;
   cursor: pointer;
@@ -405,8 +414,10 @@ onBeforeUnmount(() => {
 }
 
 #submit-button:hover {
-  background-color: #00ff7f;
-  color: #161616;
+  /* background-color: #00ff7f; */
+  /* color: #161616; */
+  transform: scale(1.05);
+  background-color: rgb(28, 28, 247);
   cursor: pointer;
 }
 
@@ -463,6 +474,7 @@ onBeforeUnmount(() => {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  background-color: white;
 }
 
 .chart1,
