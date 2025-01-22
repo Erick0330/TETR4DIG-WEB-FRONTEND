@@ -50,7 +50,7 @@ const goToLogin = () => {
       <div class="text-car">
         <h3>Modelo de escritorio</h3>
       </div>
-      <div id="carouselExampleCaptions" class="carousel slide">
+      <div id="carouselExampleCaptions" class="carousel carousel-dark slide">
         <div class="carousel-indicators">
           <button
             type="button"
@@ -224,7 +224,7 @@ const goToLogin = () => {
     <!--resultados  -->
     <div class="resultados" id="resultados">
       <div class="contenedor">
-        <h3>Resultados</h3>
+        <h3>RESULTADOS</h3>
         <p>
           Los resultados de este test se encuentran entre 4 posibles niveles.
         </p>
@@ -343,8 +343,8 @@ const goToLogin = () => {
   background-color: rgb(53, 136, 219);
 }
 
-.start p {
-  font-size: 1.5rem;
+.como-usar .start p {
+  font-size: 1.7rem;
   font-weight: bold;
   color: antiquewhite;
   transition: color 0.3s, font-size 0.3s;
@@ -352,7 +352,7 @@ const goToLogin = () => {
 }
 
 .start:hover p {
-  font-size: 1.7rem;
+  font-size: 1.9rem;
 }
 /* Background------------------------------------------------------------------------------------------------------------------------- */
 .background {
@@ -654,7 +654,6 @@ h2 {
 }
 
 .como-usar .contenedor {
-  margin-top: 100px;
   display: flex;
   flex-direction: column;
   width: 90%;
@@ -734,7 +733,7 @@ h2 {
 /* Seccion resultados  ---------------------------------------------------------------------------------------------------------------------*/
 
 .resultados {
-  padding: 90px 0 20px 0;
+  padding: 10px 0 20px 0;
   width: 100%;
   margin-bottom: 100px;
 }
