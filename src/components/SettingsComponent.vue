@@ -694,9 +694,6 @@ const handleUserKeydown = (event: KeyboardEvent, id: number) => {
                 <span v-else>{{ user.rol }}</span>
               </td>
               <td>
-                <button @click="handleDeleteQuestion(user.id)" title="Entrar">
-                  <img src="/img/IconamoonEnterBold.svg" alt="Entrar" />
-                </button>
                 <button @click="handleEditUser(user.id, user.name, user.email, user.rol)" title="Editar">
                   <img src="/img/BxsEdit.svg" alt="Editar" />
                 </button>

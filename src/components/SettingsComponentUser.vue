@@ -22,7 +22,7 @@ const goToReports = () => {
 onMounted(async () => {
   state.changeToProfile();
   try {
-    tests.value = await getUserTests();
+    tests.value = await getUserTests(state.idUser);
     tests.value.sort((a, b) => a.id - b.id); // Ordenar preguntas por ID de menor a mayor
   } catch (error) {
     console.error("Error al cargar los test:", error);

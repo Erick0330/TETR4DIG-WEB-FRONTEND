@@ -53,7 +53,7 @@ const goToProfile = () => {
         <a @click="goToSettings">Configuración</a>
       </li>
 
-      <li v-else class="list-group-item" :class="{ 'settings': currentView === 'Profile' }">
+      <li class="list-group-item" :class="{ 'settings': currentView === 'Profile' }">
         <a @click="goToProfile">Perfil</a>
       </li>
     </ul>

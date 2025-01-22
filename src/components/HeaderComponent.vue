@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { useCurrentTetraStore } from "../stores/StoreT";
 import { useRouter } from "vue-router";
-import { getCurrentUserName } from "@/services/usersService";
 
 
 const router = useRouter();
@@ -29,20 +28,7 @@ const toggleSidebar = () => {
 
 };
 
-onMounted(async () => {
-  try {
-    const u = await getCurrentUserName();
-    state.changeCurrentUser(u.name);
-    if (u.rol === 'ADMIN')
-      state.changeIsAdmin();
 
-      console.log(u.rol)
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  catch (e) {
-    alert("Problema al obtener los usuarios");
-  }
-});
 </script>
 
 

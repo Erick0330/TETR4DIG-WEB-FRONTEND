@@ -1,18 +1,37 @@
 import { defineStore } from 'pinia';
 
+const getFromLocalStorage = (key: string, defaultValue: boolean) => {
+  const value = localStorage.getItem(key);
+  if (value === null || value === "undefined") {
+    return defaultValue;
+  }
+  return JSON.parse(value);
+};
+
+
+const getNumberFromLocalStorage = (key: string, defaultValue: number) => {
+  const value = localStorage.getItem(key);
+  if (value === null || value === "undefined") {
+    return defaultValue;
+  }
+  return JSON.parse(value);
+};
+
 export const useCurrentTetraStore = defineStore('StoreT', {
   state: () => ({
     currentView: 'LandingPage',
     email: '', // Email del usuario autenticado
-    token: '', // Token JWT del usuario
-    isAuthenticated: false, // Estado de autenticación
+    token: localStorage.getItem('token') || '', // Token JWT del usuario
+    isAuthenticated: getFromLocalStorage('isAuthenticated', false),
     isSideBarActive: false,
-    isAdmin:false,
-    currentUser: '',
+    isAdmin: getFromLocalStorage('isAdmin', false),
+    currentUser: localStorage.getItem('currentUser') || '',
+    idUser: getNumberFromLocalStorage('idUser', 0)
   }),
   actions: {
     changeCurrentUser(user: string) {
       this.currentUser = user;
+      localStorage.setItem('currentUser', user); // Guardar en localStorage
     },
     // Cambio de vistas
     changeToQuestions() {
@@ -38,23 +57,28 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     },
     setToken(token: string) {
       this.token = token;
-      localStorage.setItem('token', token); // Guardar en el localStorage si quieres persistir el token
+      localStorage.setItem('token', token); // Guardar en localStorage
     },
     getToken() {
-      return this.token || localStorage.getItem('token'); // Obtiene el token desde el estado o localStorage
+      return this.token || localStorage.getItem('token'); // Obtener el token desde el estado o localStorage
     },
-    getIsSideBarActive(){
+    getIsSideBarActive() {
       return this.isSideBarActive;
     },
     changeSideBar() {
       this.isSideBarActive = !this.isSideBarActive;
-      console.log(this.isSideBarActive);
     },
-    changeIsAdmin() {
-      this.isAdmin = true;
+    changeIsAdmin(isAdmin: boolean) {
+      this.isAdmin = isAdmin;
+      localStorage.setItem('isAdmin', JSON.stringify(isAdmin)); // Guardar en localStorage
     },
-    changeIsNotAdmin(){
-      this.isAdmin = false;
+    changeIsAuthenticated(isAuthenticated: boolean) {
+      this.isAuthenticated = isAuthenticated;
+      localStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated)); // Guardar en localStorage
+    },
+    changeIdUser(id:number){
+      this.idUser = id;
+      localStorage.setItem('idUser', JSON.stringify(id))
     }
   },
 });

@@ -2,8 +2,8 @@ import api from './api';
 import type { createUserTestsDto, UserTest } from '@/types/userTest';
 
 
-export const getUserTests = async (): Promise<UserTest[]> => {
-  const response = await api.get('/user-test/findAll/1');
+export const getUserTests = async (id: number): Promise<UserTest[]> => {
+  const response = await api.get(`/user-test/findAll/${id}`);
   return response.data;
 };
 

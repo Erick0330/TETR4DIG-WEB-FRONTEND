@@ -13,6 +13,7 @@ import type { Question } from '@/types/question';
 import { useCurrentTetraStore } from '@/stores/StoreT';
 import router from '@/router';
 import { createUserTest } from '@/services/userTestsService';
+import SweetAlert from 'sweetalert2';
 
 
 const state = useCurrentTetraStore();
@@ -68,6 +69,9 @@ const loadQuestions = async (dimensionId: number) => {
     questions.value = await getQuestionByIdDimension(dimensionId);
     questions.value.sort((a,b) => a.id_question - b.id_question)
 
+    for(const question of questions.value){
+      question.points = 0;
+    }
   } catch (error) {
     console.error('Error al cargar las preguntas:', error);
   }
@@ -98,13 +102,18 @@ const goToNextDimension = async () => {
       currentDimensionIndex.value = 0;
       await loadPerspectives(ambits.value[currentAmbitIndex.value].id_ambit);
     } else {
-      alert('Has completado todas las preguntas.');
-      createUserTest({ id_user: 1,
-        ambits_result: ' ',
-        perspectives_result: ' ',
-        dimensions_result: ' ' });
-      state.changeToReports();
-      router.push('/reports')
+      SweetAlert.fire({
+        icon: 'success',
+        title: '¡Felicidades!',
+        text: 'Has completado todas las preguntas.',
+        background: '#e3f2fd',
+        confirmButtonColor: '#007bff',
+        confirmButtonText: 'Aceptar',
+      }).then(() => {
+        createUserTest({ id_user: state.idUser, ambits_result: ' ', perspectives_result: ' ', dimensions_result: ' ' });
+        state.changeToReports();
+        router.push('/reports');
+      });
 
     }
   } catch (error) {
