@@ -15,8 +15,8 @@ export const createUserTest = async (userTest: createUserTestsDto): Promise<User
 
 
 
-export const getUserTestById = async (id: number): Promise<UserTest> => {
-  const response = await api.get(`/user-test/${id}`);
+export const getUserTestById = async (id_u: number, id: number): Promise<UserTest> => {
+  const response = await api.get(`/user-test/${id_u}/${id}`);
   return response.data;
 };
 

@@ -434,6 +434,7 @@ const handleEditUser = (id: number, name: string, email: string, role: string) =
 
 const handleDeleteUser = async (id: number) => {
   try {
+    console.log(id)
     await deleteUser(id);
     users.value = users.value.filter(u => u.id !== id);
   } catch (error) {

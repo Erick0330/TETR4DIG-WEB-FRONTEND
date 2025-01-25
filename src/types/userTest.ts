@@ -14,3 +14,18 @@ export interface createUserTestsDto {
   perspectives_result: string;
   dimensions_result: string;
 }
+
+export interface ResultItem {
+  name: string;
+  value: number;
+  percentage: number;
+}
+
+export interface UserTestResult {
+  id: number;
+  id_user: number;
+  testDate: Date;
+  dimensions: ResultItem[];
+  perspectives: ResultItem[];
+  ambits: ResultItem[];
+}
