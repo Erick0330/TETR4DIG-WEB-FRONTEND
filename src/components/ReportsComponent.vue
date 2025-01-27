@@ -1,315 +1,305 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import * as echarts from 'echarts';
+import type { ResultItem, UserTest } from '@/types/userTest';
+import { getUserTestById } from '@/services/userTestsService';
 import HeaderComponent from './HeaderComponent.vue';
 import SideBarComponent from './SideBarComponent.vue';
-import { useCurrentTetraStore } from '@/stores/StoreT';
 import jsPDF from 'jspdf';
-import { getUserTestById } from '@/services/userTestsService';
-import type { UserTest } from '@/types/userTest';
+import { useCurrentTetraStore } from '@/stores/StoreT';
 
 const state = useCurrentTetraStore();
 
-const exportToPDF = () => {
-    const doc = new jsPDF();
-    const element = document.getElementById('contentPane');
-    if (element) {
-        doc.html(element, {
-            callback: function (pdf) {
-                pdf.save("prueba.pdf")
-            },
-            x: -68,
-            y: -37,
-            html2canvas: { scale: 0.17 }
-        })
-    } else {
-        console.error("Elemento con ID 'contentPane' no encontrado.");
-    }
-};
+// Referencias a los divs donde se generarán las gráficas
+const ambitChartRefs = ref<HTMLDivElement[]>([]);
+const perspectivesChartRefs = ref<HTMLDivElement[]>([]);
 
-const chart1 = ref<HTMLDivElement | null>(null);
-const chart3 = ref<HTMLDivElement | null>(null);
-const chartInstances: echarts.ECharts[] = [];
+// Datos de ejemplo con la estructura indicada
+const ambit = ref<ResultItem[]>([]);
+const perspectives = ref<ResultItem[]>([]);
 const testData = ref<UserTest | null>(null);
 
-const parseResults = (data: string) => {
-    return data.split('\n').map(item => {
-        const [name, value, percentage] = item.split('_');
-        return {
-            name,
-            value: parseFloat(value),
-            percentage: parseFloat(percentage)
-        };
-    });
+const parseResults = (data: string): ResultItem[] => {
+  return data.split('\n').map(item => {
+    const [name, value, percentage] = item.split('_');
+    return {
+      name,
+      value: parseFloat(value),
+      percentage: parseFloat(percentage)
+    };
+  });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getChartOptions = (title: string, data: any[]): echarts.EChartsOption => ({
-    backgroundColor: '#fff',
-    title: {
-        text: title,
-        left: 'center'
-    },
-    tooltip: { trigger: 'item' },
-    series: [{
-        type: 'pie',
-        radius: ['40%', '70%'],
-        label: { show: true, formatter: '{b}: {c}' },
-        data: data.map(item => ({ value: item.value, name: item.name }))
-    }],
-    color: ['#4cbeed', '#dcdcdc']
-});
+const getValues = async () => {
+  const response = await getUserTestById(2, 20);
+  testData.value = response;
+  if (testData.value) {
+    ambit.value = parseResults(testData.value.ambits_result);
+    perspectives.value = parseResults(testData.value.perspectives_result); // Añadir perspectivas
+  }
+};
 
-const initCharts = async (id_u: number, id: number) => {
-    try {
-        const response = await getUserTestById(id_u, id);
-        testData.value = response;
-        if (testData.value) {
-            const ambits = parseResults(testData.value.ambits_result);
-            if (chart1.value) {
-                const chartInstance = echarts.init(chart1.value);
-                chartInstance.setOption(getChartOptions('Resultados por Ámbitos', ambits));
-                chartInstances.push(chartInstance);
-            }
-            const perspectives = parseResults(testData.value.perspectives_result);
-            if (chart3.value) {
-                const chartInstance = echarts.init(chart3.value);
-                chartInstance.setOption(getChartOptions('Resultados por Perspectivas', perspectives));
-                chartInstances.push(chartInstance);
-            }
-        }
-    } catch (error) {
-        console.error('Error fetching test data:', error);
+// Función para generar las gráficas circulares
+const generateCharts = () => {
+  // Generar gráficos para los ambitos
+  ambitChartRefs.value.forEach((chartRef, index) => {
+    if (chartRef) {
+      const chartInstance = echarts.init(chartRef);
+      const dataToDisplay = ambit.value[index];
+
+      const option = {
+        backgroundColor: '#ffffff',
+        title: {
+          text: dataToDisplay.name,
+          left: 'center',
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c}%',
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: ['40%', '70%'],
+            label: {
+              show: true,
+              formatter: '{c}%',
+            },
+            data: [
+              { value: dataToDisplay.percentage, name: 'Porcentaje' },
+              { value: 100 - dataToDisplay.percentage, name: 'Restante' },
+            ],
+          },
+        ],
+        color: ['#4cbeed', '#dcdcdc'],
+      };
+
+      chartInstance.setOption(option);
     }
+  });
+
+  // Generar gráficos para las perspectivas
+  perspectivesChartRefs.value.forEach((chartRef, index) => {
+    if (chartRef) {
+      const chartInstance = echarts.init(chartRef);
+      const dataToDisplay = perspectives.value[index];
+
+      const option = {
+        backgroundColor: '#ffffff',
+        title: {
+          text: dataToDisplay.name,
+          left: 'center',
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c}%',
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: ['30%', '60%'], // Tamaño más pequeño para perspectivas
+            label: {
+              show: true,
+              formatter: '{c}%',
+            },
+            data: [
+              { value: dataToDisplay.percentage, name: 'Porcentaje' },
+              { value: 100 - dataToDisplay.percentage, name: 'Restante' },
+            ],
+          },
+        ],
+        color: ['#4cbeed', '#dcdcdc'],
+      };
+
+      chartInstance.setOption(option);
+    }
+  });
 };
 
-onMounted(async () => {
-    state.changeToReports();
-    await initCharts(2, 20);
-    window.addEventListener('resize', () => {
-        chartInstances.forEach(chart => chart.resize());
-    });
-});
+const exportToPDF = () => {
+  const doc = new jsPDF();
+  const element = document.getElementById('max-container');
+  if (element) {
 
-onBeforeUnmount(() => {
-    window.removeEventListener('resize', () => {
-        chartInstances.forEach(chart => chart.resize());
-    });
-    chartInstances.forEach(chart => chart.dispose());
+    doc.html(element, {
+      callback: function (pdf) {
+        pdf.save("prueba.pdf")
+      },
+      x: -80,
+      y: -15,
+      html2canvas: { scale: 0.17 }
+    })
+  } else {
+    console.error("Elemento con ID 'contentPane' no encontrado.");
+  }
+};
+
+// Generar las gráficas al montar el componente
+onMounted(async () => {
+  await getValues();
+  await nextTick(); // Asegura que el DOM se ha renderizado completamente antes de inicializar los gráficos
+  generateCharts();
+  state.changeToReports();
 });
 </script>
 
+
 <template>
-    <HeaderComponent />
-    <SideBarComponent />
-    <section id="contentPane" class="contentPane">
-        <div class="chart-div">
-            <h2>Resultados: Madurez Digital por ámbitos (MDA)</h2>
-            <div class="chartContainer">
-                <div ref="chart1" class="chart1"></div>
-            </div>
+  <HeaderComponent />
+  <SideBarComponent />
+  <div id="max-container">
+    <div class="report-container">
+      <h2 class="report-title">Resultados: Madurez Digital por ámbitos (MDA)</h2>
+      <div class="chart-wrapper">
+        <div v-for="(item, index) in ambit" :key="index" class="chart-item">
+          <div ref="ambitChartRefs" class="chart-div"></div>
         </div>
+      </div>
+    </div>
 
-        <div class="chart-divPerspective">
-            <h2>Resultados: Madurez Digital por perspectivas (MDA)</h2>
-            <div class="chartContainer">
-                <!-- <div id="chart3" class="donutChartMDP"></div> -->
-                <div ref="chart3" class="chart3"></div>
-            </div>
+    <!-- Gráficas de perspectivas -->
+    <div class="report-container">
+      <h2 class="report-title">Resultados: Madurez Digital por perspectivas (MDA)</h2>
+      <div class="chart-wrapper">
+        <div v-for="(item, index) in perspectives" :key="index" class="chart-item">
+          <div ref="perspectivesChartRefs" class="chart-div"></div>
         </div>
+      </div>
+    </div>
 
-        <div class="chart-divDimension">
-            <table class="table table-bordered">
-                <thead>
-                    <tr class="encab table-primary">
-                        <th>Perspectivas</th>
-                        <th>Madurez Digital (MDr) media real de autoevaluación</th>
-                        <th>Índice de Madurez Digital (IMD)%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>Liderazgo Digital</td><td>1.0</td><td>25.0</td></tr>
-                    <tr><td>Cultura y clima Digital</td><td>0.0</td><td>50.0</td></tr>
-                    <tr><td>Alineamiento estratégico e integración digital</td><td>1.0</td><td>0.0</td></tr>
-                    <tr><td>Trabajo inteligente (Smart working)</td><td>1.0</td><td>25.0</td></tr>
-                    <tr><td>Sistema y aplicaciones de TI</td><td>2.0</td><td>50.0</td></tr>
-                    <tr><td>Migración a la nube/Cloud Computing</td><td>0.2</td><td>0.0</td></tr>
-                    <tr><td>Big Data, Data Analytics, AI/ML y GPS</td><td>0.4</td><td>50.0</td></tr>
-                    <tr><td>Hibridación mundo físico y digital</td><td>0.6</td><td>25.0</td></tr>
-                </tbody>
-            </table>
-        </div>
+    <!-- Tabla de Perspectivas -->
+    <div class="table-container">
+      <h3 class="table-title">Perspectivas</h3>
+      <table class="perspective-table table table-bordered">
+        <thead>
+          <tr  class="table-primary">
+            <th>Perspectiva</th>
+            <th>Valor</th>
+            <th>Porcentaje</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(perspective, index) in perspectives" :key="index">
+            <td>{{ perspective.name }}</td>
+            <td>{{ perspective.value }}</td>
+            <td>{{ perspective.percentage }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-        <div id="submit-button-cvr">
-            <button id="submit-button" @click="exportToPDF">Descargar PDF</button>
-        </div>
-    </section>
+  <!-- Botón para descargar PDF -->
+  <div id="submit-button-cvr">
+    <button id="submit-button" @click="exportToPDF">Descargar PDF</button>
+  </div>
+
+  <footer>
+    <div class="button">
+      <a href="#"><i class="bi bi-chevron-double-up"></i></a>
+    </div>
+    <div class="contenedor">
+      <div class="redes">
+        <a class="mail" href="mailto:mafiasupport@gmail.com" target="_blank">
+          <i class="bi bi-envelope"></i>
+        </a>
+
+        <a href="https://www.etecsa.cu/" target="_blank">
+          <img src="/logoheader.png" alt="página oficial de ETECSA" />
+        </a>
+      </div>
+    </div>
+
+    <div class="Ftext">
+      <div class="Fcontainer">
+        <p>&copy; 2025, TETRADIG. Todos los derechos reservados</p>
+      </div>
+    </div>
+
+  </footer>
+
 </template>
 
 
-
-
 <style scoped>
-.contentPane {
-  margin: 100px 50px;
-  margin-bottom: 300px;
-  padding: 5vh 1vw 0 250px;
 
-  width: 95%;
-  height: auto;
-
+#container-max{
+  background-color: transparent;
+}
+.report-container {
+  margin-top: 100px;
   display: flex;
-  align-items: center;
   flex-direction: column;
-  flex-wrap: nowrap;
-}
-
-#submit-button-cvr {
-  margin-top: 20px;
-}
-
-#submit-button {
-  display: block;
-  width: 100%;
-  color: white;
-  background-color: blue;
-  font-weight: 600;
-  font-size: 14px;
-  margin: 0;
-  padding: 14px 13px 12px 13px;
-  border: 0;
-  /* outline: 1px solid #00ff7f; */
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
   border-radius: 8px;
-  line-height: 1;
-  cursor: pointer;
-  transition: all ease-in-out 0.3s;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 55%;
+  justify-self: center;
+  margin-left: 70px;
+  margin-bottom: 100px;
+
 }
 
-#submit-button:hover {
-  /* background-color: #00ff7f; */
-  /* color: #161616; */
-  transform: scale(1.05);
-  background-color: rgb(28, 28, 247);
-  cursor: pointer;
+.report-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
 }
 
-.chart-div h2 {
-  margin-bottom: 1rem;
+.chart-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.chart-item {
+  padding: 15px;
+  max-width: 100%;  /* Asegurando que no se desborden en pantallas pequeñas */
 }
 
 .chart-div {
-  margin-top: 50px;
-  position: relative;
-  width: 80%;
-  height: auto;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid #070707;
-  border-radius: 5px;
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
-  text-align: center;
+  width: 400px;
+  height: 300px;
 }
 
-.chart-divDimension {
-  flex-wrap: wrap;
-  margin-top: 50px;
-  position: relative;
-  width: 80%;
-  height: auto;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid #070707;
-  border-radius: 5px;
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
-  text-align: center;
-}
-
-.chart-divPerspective {
-  flex-wrap: wrap;
-  margin-top: 50px;
-  position: relative;
-  width: 80%;
-  height: auto;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid #070707;
-  border-radius: 5px;
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
-  text-align: center;
-}
-
-.donutChartMDP {
-  width: 30%;
-  /* Ancho predeterminado para pantallas grandes */
-  height: 350px;
-}
-
-.chartContainer {
+.table-container {
+  margin-top: 40px;
+  width: 55%;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+  margin-left: 70px;
+  margin-bottom: 80px;
+}
+
+#submit-button-cvr {
+  display: flex;
   justify-content: center;
-  background-color: white;
+  margin-top: 20px;
+  margin-left: 70px;
+  margin-bottom: 100px;
 }
 
-.chart1,
-.chart2,
-.chart3,
-.donutChartMPD {
-  padding: 10px;
-  width: 45%;
-  min-height: 350px;
+#submit-button {
+  background-color: #4cbeed;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
 }
 
-/* Responsividad */
-@media (max-width: 990px) {
-  .chartContainer {
-    flex-direction: column;
-    width: 100%;
-    padding-right: 5px;
-  }
-
-  .chart1,
-  .chart2,
-  .chart3 {
-    width: 100%;
-    margin-bottom: 1rem;
-    flex: 1 1 100%;
-  }
-
-  .donutChartMDP {
-    width: 100%;
-    /* Ancho del 100% cuando el dispositivo tenga 990px o menos */
-    margin-bottom: 20px;
-    /* Espacio entre gráficas */
-  }
-
-  .contentPane {
-    margin-top: 100px;
-    padding: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 300px;
-  }
-
-  .chart-div {
-    position: relative;
-    margin-top: 10px;
-    padding-top: 5px;
-    height: auto;
-  }
-
-  .chart-divPerspective {
-    margin-top: 50px;
-    position: relative;
-    width: 80%;
-    height: 200%;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid #070707;
-    border-radius: 5px;
-    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
-    text-align: center;
-  }
+#submit-button:hover {
+  background-color: #3498db;
 }
 
-/* Footer  */
 
 footer {
   padding: 0 0 0 0;
@@ -321,9 +311,7 @@ footer {
   left: 0;
   bottom: 0;
   z-index: 10;
-  /* Asegura que esté encima del footer */
   position: relative;
-  /* Ya configurado correctamente */
 }
 
 footer .contenedor {
@@ -385,5 +373,37 @@ footer .Ftext {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 1200px) {
+  .chart-div {
+    width: 100%;
+    height: 250px;
+  }
+
+  .report-container {
+    width: 40%;
+  }
+
+  .table-container{
+    width: 40%;
+  }
+}
+
+@media (max-width: 930px) {
+
+  .report-container {
+    width: 90%;
+    margin-left: 0;
+  }
+
+  .table-container{
+    width: 90%;
+    margin-left: 0;
+  }
+
+  #submit-button-cvr{
+    margin-left: 0;
+  }
 }
 </style>

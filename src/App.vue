@@ -1,14 +1,14 @@
 <template>
   <div class="page-wrapper">
     <router-view></router-view>
-     <!-- <abdiel-thanx-component/> -->
+      <!-- <exemple-component/> -->
   </div>
 
 
 </template>
 
 <script setup lang="ts">
-// import AbdielThanxComponent from './components/AbdielThanxComponent.vue';
+// import ExempleComponent from './components/ExempleComponent.vue';
 </script>
 
 <style scoped>
