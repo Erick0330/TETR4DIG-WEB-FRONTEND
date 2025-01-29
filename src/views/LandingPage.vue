@@ -1,9 +1,26 @@
 <script setup lang="ts">
 import ArrowComponent from "@/components/ArrowComponent.vue";
 import router from "@/router";
+import { useCurrentTetraStore } from "@/stores/StoreT";
+import { nextTick, onMounted } from "vue";
+
+const state = useCurrentTetraStore();
+
 const goToLogin = () => {
   router.push("/login");
 };
+
+const handleInit = () => {
+  if(!state.isAuthenticated)
+    goToLogin();
+  else
+  router.push('/questions');
+}
+
+onMounted(async () => {
+  await nextTick();
+
+});
 </script>
 
 <template>
@@ -197,18 +214,6 @@ const goToLogin = () => {
             class="list-group-item d-flex justify-content-between align-items-start"
           >
             <div class="ms-2 me-auto">
-              <div class="fw-bold">3-Operacional</div>
-              <p>
-                Actividad o iniciativa digital en etapa de puesta en marcha o
-                generalización (se implementa en las operaciones diarias).
-              </p>
-            </div>
-          </li>
-
-          <li
-            class="list-group-item d-flex justify-content-between align-items-start"
-          >
-            <div class="ms-2 me-auto">
               <div class="fw-bold">4-Optimizado</div>
               <p>
                 Actividad o iniciativa digital en etapa de optimización y mejora
@@ -285,7 +290,7 @@ const goToLogin = () => {
       </div>
     </div>
 
-    <div id="start" @click="goToLogin" class="start-container">
+    <div id="start" @click="handleInit()" class="start-container">
       <a class="start">
         <p>Empezar</p>
       </a>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { createQuestion, updateQuestion, deleteQuestion, getQuestionByIdDimension } from "@/services/questionsService";
 import type { Question } from "@/types/question";
 import SideBarComponent from "./SideBarComponent.vue";
@@ -53,6 +53,7 @@ const roles = ['USER', 'ADMIN'];
 
 onMounted(async () => {
   state.changeToSettings();
+  await nextTick();
 
   getAllAmbits();
   try {
@@ -1002,9 +1003,7 @@ footer {
   left: 0;
   bottom: 0;
   z-index: 10;
-  /* Asegura que esté encima del footer */
   position: relative;
-  /* Ya configurado correctamente */
 }
 
 footer .contenedor {
@@ -1067,4 +1066,5 @@ footer .Ftext {
   align-items: center;
   justify-content: center;
 }
+
 </style>

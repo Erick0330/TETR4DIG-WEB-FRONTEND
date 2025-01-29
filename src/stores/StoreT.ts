@@ -26,12 +26,17 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     isSideBarActive: false,
     isAdmin: getFromLocalStorage('isAdmin', false),
     currentUser: localStorage.getItem('currentUser') || '',
-    idUser: getNumberFromLocalStorage('idUser', 0)
+    idUser: getNumberFromLocalStorage('idUser', 0),
+    currentReportId: getNumberFromLocalStorage('idReport', 0),
   }),
   actions: {
     changeCurrentUser(user: string) {
       this.currentUser = user;
       localStorage.setItem('currentUser', user); // Guardar en localStorage
+    },
+    changeCurrentReport(id: number){
+      this.currentReportId = id;
+      localStorage.setItem('idReport', JSON.stringify(id));
     },
     // Cambio de vistas
     changeToQuestions() {
@@ -79,6 +84,14 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     changeIdUser(id:number){
       this.idUser = id;
       localStorage.setItem('idUser', JSON.stringify(id))
+    },
+    closeSection(){
+      this.changeIdUser(0);
+      this.changeCurrentUser('');
+      this.changeIsAuthenticated(false);
+      this.changeCurrentReport(0);
+      this.changeIsAdmin(false);
+      this.changeIsAuthenticated(false);
     }
   },
 });

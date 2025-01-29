@@ -4,7 +4,7 @@ import { useCurrentTetraStore } from "../stores/StoreT";
 import { useRouter } from "vue-router";
 import SideBarComponent from "./SideBarComponent.vue";
 import HeaderComponent from "./HeaderComponent.vue";
-import { onMounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import type { UserTest } from "@/types/userTest";
 import { getUserTests } from "@/services/userTestsService";
 
@@ -19,8 +19,14 @@ const goToReports = () => {
   router.push("/reports");
 };
 
+const changeCurrentReport = (id: number) => {
+  state.changeCurrentReport(id);
+}
+
 onMounted(async () => {
+  await nextTick();
   state.changeToProfile();
+
   try {
     tests.value = await getUserTests(state.idUser);
     tests.value.sort((a, b) => a.id - b.id); // Ordenar preguntas por ID de menor a mayor
@@ -69,7 +75,7 @@ onMounted(async () => {
             </tr>
           </thead>
           <tbody>
-            <tr class="redic" @click="goToReports()" v-for="(test) in tests" :key="test.id">
+            <tr class="redic" @click="goToReports(), changeCurrentReport(test.id)" v-for="(test) in tests" :key="test.id">
               <td>{{ test.id }}</td>
               <td >
                 {{ test.testDate }}
@@ -97,7 +103,12 @@ onMounted(async () => {
       </div>
     </div>
 
-    <p>&copy; 2024, TETRADIG. Todos los derechos reservados</p>
+    <div class="Ftext">
+      <div class="Fcontainer">
+        <p>&copy; 2025, TETRADIG. Todos los derechos reservados</p>
+      </div>
+    </div>
+
   </footer>
 </template>
 
@@ -130,6 +141,7 @@ onMounted(async () => {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
   width: 40%;
+  background-color: #fff;
 }
 
 input {
@@ -159,9 +171,7 @@ footer {
   left: 0;
   bottom: 0;
   z-index: 10;
-  /* Asegura que esté encima del footer */
   position: relative;
-  /* Ya configurado correctamente */
 }
 
 footer .contenedor {
@@ -218,6 +228,13 @@ footer .contenedor .redes {
 footer p {
   color: antiquewhite;
 }
+
+footer .Ftext {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 @media screen and (max-width: 990px) {
 

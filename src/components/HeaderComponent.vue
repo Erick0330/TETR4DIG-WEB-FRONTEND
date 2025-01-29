@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useCurrentTetraStore } from "../stores/StoreT";
 import { useRouter } from "vue-router";
+import SweetAlert from 'sweetalert2';
 
 
 const router = useRouter();
@@ -11,10 +12,6 @@ const state = useCurrentTetraStore();
 
 const currentUser = computed(() => state.currentUser);
 
-const gotoLogin = () => {
-  state.changeToLogin();
-  router.push("/login");
-}
 
 const goToLP = () => {
   state.changeToLP();
@@ -24,9 +21,26 @@ const goToLP = () => {
 // Función para alternar la clase "active" en el sidebar
 const toggleSidebar = () => {
   state.changeSideBar();
-
-
 };
+
+const closeSection = () =>{
+  SweetAlert.fire({
+        icon: 'warning',
+        title: 'Cuidado',
+        text: 'Va a cerrar sesión, está seguro que desea hacerlo?',
+        background: '#e3f2fd',
+        confirmButtonColor: '#007bff',
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        cancelButtonColor: '#ff2626',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+            state.closeSection();
+            router.push('/');
+        }
+      });
+}
 
 
 </script>
@@ -65,7 +79,7 @@ const toggleSidebar = () => {
 
                 <div class="border"></div>
                 <li class="nav-item">
-                  <a class="nav-link margin" style="cursor: pointer;" @click="gotoLogin">Cerrar sesión</a>
+                  <a class="nav-link margin" style="cursor: pointer;" @click="closeSection()">Cerrar sesión</a>
                 </li>
 
               </ul>

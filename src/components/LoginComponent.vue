@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { loginUser } from "@/services/authService"; // Importamos el servicio de autenticación
+import { loginUser, registerUser } from "@/services/authService"; // Importamos el servicio de autenticación
 import { useCurrentTetraStore } from "@/stores/StoreT";
+
 
 const router = useRouter();
 
@@ -12,18 +13,27 @@ const email = ref("");
 const password = ref("");
 const error = ref("");
 const name = ref("");
+// const route = useRoute();
 
 const toggleForgotPassword = ref(false);
 const toggleCreateAccount = ref(false);
 
 const handleLogin = async () => {
-  try {
-    await loginUser(email.value, password.value); // Llamada al servicio de login
-    router.push("/questions"); // Redirige a la página de preguntas si el login es exitoso
-    state.changeToQuestions();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) {
-    error.value = "Credenciales incorrectas. Por favor, inténtalo nuevamente.";
+  if (!toggleCreateAccount.value) {
+    try {
+      await loginUser(email.value, password.value); // Llamada al servicio de login
+      // const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/';
+      // router.push(redirect);
+      // console.log(redirect);
+      router.push("/questions");
+      state.changeToQuestions();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      error.value = "Credenciales incorrectas. Por favor, inténtalo nuevamente.";
+    }
+  }
+  else{
+    handleRegisterUser();
   }
 };
 
@@ -34,6 +44,15 @@ const toggleForgotPasswordHandler = () => {
 const toggleCreateAccountHandler = () => {
   toggleCreateAccount.value = !toggleCreateAccount.value;
 };
+
+const handleRegisterUser = async () => {
+  try {
+    await registerUser(email.value, name.value, password.value);
+    toggleCreateAccountHandler();
+  } catch (e) {
+    error.value = "" + e;
+  }
+}
 
 const goToVerification = () => {
   state.changeToVerification();
@@ -63,16 +82,17 @@ const goToVerification = () => {
                 <button id="submit-button" type="submit">Login</button>
               </div>
               <div id="forgot-pass">
-                <button type="button" @click="toggleForgotPasswordHandler" class="transparent-button">Forgot
+                <button type="button" @click="toggleForgotPasswordHandler()" class="transparent-button">Forgot
                   Password?</button>
               </div>
 
               <div id="forgot-pass">
-              <button type="button" @click="toggleCreateAccountHandler" class="transparent-button">No tengo cuenta</button>
-            </div>
+                <button type="button" @click="toggleCreateAccountHandler()" class="transparent-button">No tengo
+                  cuenta</button>
+              </div>
 
               <div id="bar"></div>
-            <p v-if="error" class="error">{{ error }}</p>
+              <p v-if="error" class="error">{{ error }}</p>
             </div>
           </div>
 
@@ -90,7 +110,7 @@ const goToVerification = () => {
               <button id="submit-button" @click="goToVerification()" type="submit">Enviar</button>
             </div>
             <div id="forgot-pass">
-              <button type="button" @click="toggleForgotPasswordHandler" class="transparent-button">Back to
+              <button type="button" @click="toggleForgotPasswordHandler()" class="transparent-button">Back to
                 Login</button>
             </div>
             <div id="bar"></div>
@@ -116,7 +136,8 @@ const goToVerification = () => {
               <button id="submit-button" type="submit">Crear Cuenta</button>
             </div>
             <div id="forgot-pass">
-              <button type="button" @click="toggleCreateAccountHandler" class="transparent-button">Back to Login</button>
+              <button type="button" @click="toggleCreateAccountHandler()" class="transparent-button">Back to
+                Login</button>
             </div>
             <div id="bar"></div>
           </div>
@@ -160,7 +181,8 @@ const goToVerification = () => {
   outline: 1px solid #298dc7;
   border-radius: 10px;
   position: relative;
-  overflow: hidden; /* Evita que los formularios se vean fuera del contenedor durante la transición */
+  overflow: hidden;
+  /* Evita que los formularios se vean fuera del contenedor durante la transición */
 }
 
 #form-body {
@@ -294,7 +316,8 @@ const goToVerification = () => {
 }
 
 /* Transiciones personalizadas para el efecto slide-left */
-.slide-left-enter-active, .slide-left-leave-active {
+.slide-left-enter-active,
+.slide-left-leave-active {
   transition: transform 0.6s ease, opacity 0.6s ease;
 }
 
@@ -317,5 +340,4 @@ const goToVerification = () => {
   transform: translateX(-100%);
   opacity: 0;
 }
-
 </style>

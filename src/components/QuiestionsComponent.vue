@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import HeaderComponent from './HeaderComponent.vue';
 import SideBarComponent from './SideBarComponent.vue';
 import { getAmbits } from '@/services/ambitsService';
@@ -109,9 +109,9 @@ const goToNextDimension = async () => {
         background: '#e3f2fd',
         confirmButtonColor: '#007bff',
         confirmButtonText: 'Aceptar',
-      }).then(() => {
-        createUserTest({ id_user: state.idUser, ambits_result: ' ', perspectives_result: ' ', dimensions_result: ' ' });
-        state.changeToReports();
+      }).then(async () => {
+        const response = await createUserTest({ id_user: state.idUser, ambits_result: ' ', perspectives_result: ' ', dimensions_result: ' ' });
+        state.changeCurrentReport(response.id);
         router.push('/reports');
       });
 
@@ -121,7 +121,8 @@ const goToNextDimension = async () => {
   }
 };
 
-onMounted( () => {
+onMounted( async () => {
+  await nextTick();
   loadData();
   state.changeToQuestions();
 } );
@@ -162,7 +163,7 @@ onMounted( () => {
     </table>
 
     <div class="text-end">
-      <button @click="goToNextDimension" class="btn btn-primary">Siguiente Dimensión</button>
+      <button @click="goToNextDimension" class="btn btn-primary">Siguiente</button>
     </div>
   </div>
 

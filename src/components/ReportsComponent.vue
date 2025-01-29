@@ -30,8 +30,8 @@ const parseResults = (data: string): ResultItem[] => {
   });
 };
 
-const getValues = async () => {
-  const response = await getUserTestById(2, 20);
+const getValues = async (id_u: number, id: number) => {
+  const response = await getUserTestById(id_u, id);
   testData.value = response;
   if (testData.value) {
     ambit.value = parseResults(testData.value.ambits_result);
@@ -136,10 +136,12 @@ const exportToPDF = () => {
 
 // Generar las gráficas al montar el componente
 onMounted(async () => {
-  await getValues();
-  await nextTick(); // Asegura que el DOM se ha renderizado completamente antes de inicializar los gráficos
-  generateCharts();
   state.changeToReports();
+  console.log(state.currentReportId);
+  await getValues(state.idUser, state.currentReportId);
+  await nextTick();
+  generateCharts();
+
 });
 </script>
 
@@ -223,8 +225,8 @@ onMounted(async () => {
 
 <style scoped>
 
-#container-max{
-  background-color: transparent;
+#max-container{
+  min-height: 65vh;
 }
 .report-container {
   margin-top: 100px;
