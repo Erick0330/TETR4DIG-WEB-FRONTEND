@@ -137,8 +137,8 @@ const exportToPDF = () => {
 // Generar las gráficas al montar el componente
 onMounted(async () => {
   state.changeToReports();
-  console.log(state.currentReportId);
-  await getValues(state.idUser, state.currentReportId);
+  if(state.currentReportId > 0)
+    await getValues(state.idUser, state.currentReportId);
   await nextTick();
   generateCharts();
 

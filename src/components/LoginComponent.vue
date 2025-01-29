@@ -37,9 +37,9 @@ const handleLogin = async () => {
   }
 };
 
-const toggleForgotPasswordHandler = () => {
-  toggleForgotPassword.value = !toggleForgotPassword.value;
-};
+// const toggleForgotPasswordHandler = () => {
+//   toggleForgotPassword.value = !toggleForgotPassword.value;
+// };
 
 const toggleCreateAccountHandler = () => {
   toggleCreateAccount.value = !toggleCreateAccount.value;
@@ -54,10 +54,10 @@ const handleRegisterUser = async () => {
   }
 }
 
-const goToVerification = () => {
-  state.changeToVerification();
-  router.push("/verification");
-};
+// const goToVerification = () => {
+//   state.changeToVerification();
+//   router.push("/verification");
+// };
 </script>
 
 
@@ -81,10 +81,10 @@ const goToVerification = () => {
               <div id="submit-button-cvr">
                 <button id="submit-button" type="submit">Login</button>
               </div>
-              <div id="forgot-pass">
+              <!-- <div id="forgot-pass">
                 <button type="button" @click="toggleForgotPasswordHandler()" class="transparent-button">Forgot
                   Password?</button>
-              </div>
+              </div> -->
 
               <div id="forgot-pass">
                 <button type="button" @click="toggleCreateAccountHandler()" class="transparent-button">No tengo
@@ -96,7 +96,7 @@ const goToVerification = () => {
             </div>
           </div>
 
-          <div v-else-if="toggleForgotPassword" key="forgot-password-fields" id="form-body">
+          <!-- <div v-else-if="toggleForgotPassword" key="forgot-password-fields" id="form-body">
             <div id="welcome-lines">
               <div id="welcome-line-1">ETECSA</div>
               <div id="welcome-line-2">Escribe tu correo electrónico para recuperar tu contraseña</div>
@@ -114,7 +114,7 @@ const goToVerification = () => {
                 Login</button>
             </div>
             <div id="bar"></div>
-          </div>
+          </div> -->
 
           <div v-else key="create-account-fields" id="form-body">
             <div id="welcome-lines">

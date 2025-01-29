@@ -22,6 +22,7 @@ export const loginUser = async (email: string, password: string) => {
     store.changeIdUser(response.data.id);
     store.changeCurrentReport(response.data.currentReportId);
     store.changeIsAuthenticated(true);
+    store.changeEmail(response.data.email);
     return token; // Retornamos el token para que se pueda usar en otras partes si es necesario
   } catch (error) {
     console.error("Error de autenticación", error);

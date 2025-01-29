@@ -7,12 +7,26 @@ import HeaderComponent from "./HeaderComponent.vue";
 import { nextTick, onMounted, ref } from "vue";
 import type { UserTest } from "@/types/userTest";
 import { getUserTests } from "@/services/userTestsService";
+import { updateUser } from "@/services/usersService";
 
 
 const state = useCurrentTetraStore();
 const router = useRouter();
 
 const tests = ref<UserTest[]>([]);
+
+const name = ref("");
+
+const handleChangeUserName = async () =>{
+  try{
+    const rol = state.isAdmin ? 'ADMIN' : 'USER';
+    await updateUser(state.idUser, {name: name.value, rol: rol, email: state.email });
+    state.changeCurrentUser(name.value);
+  }
+  catch(e){
+    throw new Error("Error al actualizar" + e);
+  }
+}
 
 const goToReports = () => {
   state.changeToReports();
@@ -44,21 +58,11 @@ onMounted(async () => {
       <div class="container">
         <h2>Nombre de Usuario</h2>
 
-        <input placeholder="Nombre de Usuario" required type="text" />
+        <input v-model="name" placeholder="Nombre de Usuario" required type="text" />
 
         <p>Si deseas cambiar tu nombre de usuario, ingresa el nuevo nombre en el campo anterior y haz clic en "Cambiar
           Usuario".</p>
-        <button type="button" class="btn btn-primary">Cambiar Usuario</button>
-      </div>
-
-      <div class="container mt-5">
-        <h2>Contraseña</h2>
-
-        <input placeholder="Contraseña" required type="text" />
-
-        <p>Si deseas cambiar tu contraseña, ingresa la nueva contraseña en el campo anterior y haz clic en "Cambiar
-          Contraseña", y se le enviará un email para guardar los cambios.</p>
-        <button type="button" class="btn btn-primary">Cambiar Contraseña</button>
+        <button type="button" @click="handleChangeUserName()" class="btn btn-primary">Cambiar Usuario</button>
       </div>
 
     </section>
@@ -125,7 +129,7 @@ onMounted(async () => {
   gap: 40px;
   margin-top: 100px;
   margin-bottom: 100px;
-  min-height: 23vh;
+  min-height: 30vh;
 }
 
 .redic {

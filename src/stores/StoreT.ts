@@ -20,7 +20,7 @@ const getNumberFromLocalStorage = (key: string, defaultValue: number) => {
 export const useCurrentTetraStore = defineStore('StoreT', {
   state: () => ({
     currentView: 'LandingPage',
-    email: '', // Email del usuario autenticado
+    email: localStorage.getItem('email') || '', // Email del usuario autenticado
     token: localStorage.getItem('token') || '', // Token JWT del usuario
     isAuthenticated: getFromLocalStorage('isAuthenticated', false),
     isSideBarActive: false,
@@ -84,6 +84,10 @@ export const useCurrentTetraStore = defineStore('StoreT', {
     changeIdUser(id:number){
       this.idUser = id;
       localStorage.setItem('idUser', JSON.stringify(id))
+    },
+    changeEmail(email: string){
+      this.email = email;
+      localStorage.setItem('email', email);
     },
     closeSection(){
       this.changeIdUser(0);
